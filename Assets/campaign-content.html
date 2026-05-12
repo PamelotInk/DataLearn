@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DataLearn — Campaign Content</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #090d14; --bg-2: #161b22; --bg-3: #21262d;
+      --border: #30363d; --text-1: #e6edf3; --text-2: #adbac7; --text-3: #768390;
+      --blue: #539bf5; --green: #3fb950; --gold: #e3b341; --orange: #f0883e;
+    }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text-1); padding: 40px 24px; }
+    .wrap { max-width: 820px; margin: 0 auto; }
+    h1 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+    .subtitle { color: var(--text-3); font-size: 13px; margin-bottom: 48px; }
+    h2 { font-size: 16px; font-weight: 700; margin-bottom: 16px; color: var(--blue); letter-spacing: .04em; text-transform: uppercase; }
+    .card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 10px; padding: 28px 32px; margin-bottom: 32px; }
+    .content-block { white-space: pre-wrap; font-size: 14px; color: var(--text-2); line-height: 1.8; }
+    .copy-btn {
+      background: var(--bg-3); border: 1px solid var(--border); color: var(--text-2);
+      font-size: 12px; font-weight: 600; padding: 6px 16px; border-radius: 6px;
+      cursor: pointer; margin-top: 18px; display: inline-block; transition: background .15s;
+    }
+    .copy-btn:hover { background: var(--border); color: var(--text-1); }
+    .tag { display: inline-block; background: rgba(83,155,245,.12); border: 1px solid rgba(83,155,245,.25); color: var(--blue); font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 100px; margin: 4px 4px 4px 0; }
+    .note { background: rgba(240,136,62,.08); border: 1px solid rgba(240,136,62,.3); border-radius: 8px; padding: 14px 18px; margin-bottom: 16px; font-size: 13px; color: var(--orange); line-height: 1.6; }
+    .section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--text-3); margin-bottom: 8px; }
+    hr { border: none; border-top: 1px solid var(--border); margin: 12px 0 20px; }
+    .script-line { margin-bottom: 14px; font-size: 14px; line-height: 1.75; color: var(--text-2); }
+    .script-line strong { color: var(--text-1); }
+    .script-line .timestamp { color: var(--gold); font-family: 'JetBrains Mono', monospace; font-size: 12px; margin-right: 8px; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>DataLearn Campaign Content</h1>
+  <p class="subtitle">Reference guide for LinkedIn posts, YouTube scripts, and campaign hashtags.</p>
+
+  <!-- ── LINKEDIN LAUNCH POST ──────────────────── -->
+  <div class="card">
+    <h2>LinkedIn — Launch Post</h2>
+    <div class="note">
+      Post this on Day 1. Pin it to the top of your profile. Add a screen recording of the calculator as a video or GIF attachment for 3–5x more reach.
+    </div>
+    <div class="section-label">Post copy (copy exactly)</div>
+    <hr />
+    <div class="content-block" id="li-launch">I built something I wish existed when I started in data.
+
+DataLearn teaches SQL, Python, SAS, R, Excel, and dbt the way analysts actually use them — not textbook theory, real-world scenarios with hands-on challenges.
+
+90 lessons. 6 languages. 3 skill levels. A live SQL engine. All free to use.
+
+Today I'm launching a fundraiser to take it further: mobile app, 200+ lessons, community features, and better infrastructure.
+
+🎯 Goal: $40,000 in 30 days
+
+And here's the part I'm excited about — every single contributor gets immediate access to the Data Analyst Calculator I built.
+
+It covers:
+✅ Statistical calculators (mean, std dev, confidence intervals)
+✅ Business KPIs (CAC, LTV, churn rate, conversion rate)
+✅ A/B testing &amp; sample size calculator
+✅ Data quality checks (null rate, duplicate rate)
+✅ Growth metrics (MoM, YoY, CAGR)
+
+Tiers start at $25. It's a one-time payment, no subscription.
+
+If you've ever searched "how to calculate LTV in SQL" at 11pm before a presentation — this was made for you.
+
+Link in comments 👇
+
+#DataAnalytics #SQL #Python #DataScience #LearnSQL #DataAnalyst #Analytics</div>
+    <button class="copy-btn" onclick="copyText('li-launch')">Copy Post</button>
+  </div>
+
+  <!-- ── LINKEDIN FOLLOW-UP POST (WEEK 2) ──────── -->
+  <div class="card">
+    <h2>LinkedIn — Week 2 Follow-Up Post</h2>
+    <div class="note">
+      Post this around Day 10–12. Update the backer/raised numbers to your real figures before posting.
+    </div>
+    <div class="section-label">Post copy</div>
+    <hr />
+    <div class="content-block" id="li-week2">Quick update on the DataLearn fundraiser —
+
+[X] backers in [X] days. Thank you.
+
+For those who missed the first post: I'm raising $40,000 to expand DataLearn, a free platform that teaches SQL, Python, SAS, R, Excel, and dbt for data analysts.
+
+Everyone who contributes gets the Data Analyst Calculator — a tool with stats calculators, KPI formulas, A/B testing, growth metrics, and data quality checks all in one place.
+
+Three things I've learned from talking to backers this week:
+
+1. Most data analysts never had a structured place to learn all six tools together
+2. The calculator is genuinely being used — not just downloaded and forgotten
+3. People want a mobile version badly
+
+That last one is partly what the fund is for.
+
+20 days left. Starting at $25.
+
+[YOUR FUNDRAISER LINK]
+
+#DataAnalytics #SQL #Python #DataAnalyst #SAS #Analytics</div>
+    <button class="copy-btn" onclick="copyText('li-week2')">Copy Post</button>
+  </div>
+
+  <!-- ── LINKEDIN DM TEMPLATE ───────────────────── -->
+  <div class="card">
+    <h2>LinkedIn — Direct Message Template</h2>
+    <div class="note">
+      Send to 20–30 people in your network who work in data roles. Personalize the first line with their name.
+    </div>
+    <div class="section-label">DM copy</div>
+    <hr />
+    <div class="content-block" id="li-dm">Hey [Name],
+
+I launched a fundraiser this week for a platform I built called DataLearn — it teaches SQL, Python, SAS, R, Excel, and dbt for data analysts.
+
+I think you'd find the Data Analyst Calculator useful (every contributor gets it as a reward). It's got KPI formulas, A/B test calculators, growth metrics, and data quality checks all in one tool.
+
+Would love your support if you think it sounds worthwhile: [YOUR FUNDRAISER LINK]
+
+No pressure either way — just wanted to share it with people in the field.
+
+Thanks!</div>
+    <button class="copy-btn" onclick="copyText('li-dm')">Copy DM</button>
+  </div>
+
+  <!-- ── YOUTUBE / VIDEO SCRIPT ─────────────────── -->
+  <div class="card">
+    <h2>YouTube Short / Demo Video Script</h2>
+    <div class="note">
+      Target length: 60–90 seconds. Record your screen showing the calculator while speaking. No face cam required. Use a simple screen recorder (OBS, ShareX, or Windows Game Bar: Win + G).
+    </div>
+    <hr />
+
+    <div class="script-line">
+      <span class="timestamp">[0:00–0:05]</span>
+      <strong>Hook (say this immediately, no intro):</strong><br />
+      "If you're a data analyst and you've ever had to Google how to calculate confidence intervals, churn rate, or sample size in the middle of an analysis — I built something for you."
+    </div>
+
+    <div class="script-line">
+      <span class="timestamp">[0:05–0:20]</span>
+      <strong>Show the calculator opening:</strong><br />
+      "This is the Data Analyst Calculator. It's not a generic calculator — every formula in here is something analysts actually use at work."
+      <br /><em>(Click through the sidebar categories: Statistical, Business KPIs, A/B Testing, Growth, Data Quality)</em>
+    </div>
+
+    <div class="script-line">
+      <span class="timestamp">[0:20–0:40]</span>
+      <strong>Live demo — pick 2 calculators to show:</strong><br />
+      Option A: Open the LTV calculator. Type in example numbers. Show the result.<br />
+      "Customer LTV — plug in your numbers and it does the math instantly."<br /><br />
+      Option B: Open the A/B test sample size calculator.<br />
+      "Running an experiment? Here's exactly how many users you need for it to be statistically valid."
+    </div>
+
+    <div class="script-line">
+      <span class="timestamp">[0:40–0:55]</span>
+      <strong>The pitch:</strong><br />
+      "I'm running a 30-day fundraiser for DataLearn — the platform I built to teach SQL, Python, SAS, R, Excel, and dbt. Everyone who contributes gets this calculator for free. It starts at $25, one-time payment."
+    </div>
+
+    <div class="script-line">
+      <span class="timestamp">[0:55–1:00]</span>
+      <strong>CTA:</strong><br />
+      "Link in bio. Check it out — and if you know a data analyst who'd use this, share it with them."
+    </div>
+  </div>
+
+  <!-- ── HASHTAG PACKS ───────────────────────────── -->
+  <div class="card">
+    <h2>Hashtag Packs</h2>
+
+    <div class="section-label" style="margin-bottom:10px;">LinkedIn (use 5–8 max)</div>
+    <div>
+      <span class="tag">#DataAnalytics</span>
+      <span class="tag">#SQL</span>
+      <span class="tag">#Python</span>
+      <span class="tag">#DataAnalyst</span>
+      <span class="tag">#DataScience</span>
+      <span class="tag">#LearnSQL</span>
+      <span class="tag">#Analytics</span>
+      <span class="tag">#SAS</span>
+    </div>
+
+    <div class="section-label" style="margin-top:20px; margin-bottom:10px;">YouTube / X / TikTok</div>
+    <div>
+      <span class="tag">#dataanalyst</span>
+      <span class="tag">#learnSQL</span>
+      <span class="tag">#SQLtutorial</span>
+      <span class="tag">#pythonforanalysts</span>
+      <span class="tag">#dataanalysis</span>
+      <span class="tag">#techtools</span>
+      <span class="tag">#datacareer</span>
+    </div>
+
+    <div class="section-label" style="margin-top:20px; margin-bottom:10px;">Reddit communities to post in (read rules before posting)</div>
+    <div>
+      <span class="tag">r/dataanalysis</span>
+      <span class="tag">r/learnpython</span>
+      <span class="tag">r/SQL</span>
+      <span class="tag">r/datascience</span>
+      <span class="tag">r/analytics</span>
+    </div>
+  </div>
+
+  <!-- ── CHECKLIST ──────────────────────────────── -->
+  <div class="card">
+    <h2>Launch Checklist</h2>
+    <div style="font-size:14px; color:var(--text-2); line-height:2.2;">
+      <div>☐ Replace <code style="background:var(--bg-3);padding:1px 6px;border-radius:4px;">YOURUSERNAME</code> in fundraiser.html with your actual PayPal.me username</div>
+      <div>☐ Replace <code style="background:var(--bg-3);padding:1px 6px;border-radius:4px;">[your email here]</code> in fundraiser.html with your real contact email</div>
+      <div>☐ Push all files to GitHub (fundraiser.html, index.html changes)</div>
+      <div>☐ Test all three PayPal links on your live site</div>
+      <div>☐ Record the calculator demo video (60–90 sec)</div>
+      <div>☐ Post LinkedIn launch post + pin it to profile</div>
+      <div>☐ Share fundraiser link in the LinkedIn post comments</div>
+      <div>☐ Upload demo video to YouTube, TikTok, or LinkedIn video</div>
+      <div>☐ Send 20–30 DMs to data analysts in your network</div>
+      <div>☐ Post in relevant Reddit communities (read rules first)</div>
+      <div>☐ Update RAISED and BACKERS values in fundraiser.html weekly</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function copyText(id) {
+    var el = document.getElementById(id);
+    var text = el.innerText;
+    navigator.clipboard.writeText(text).then(function() {
+      var btn = el.parentElement.querySelector('.copy-btn');
+      btn.textContent = 'Copied!';
+      setTimeout(function(){ btn.textContent = btn.textContent.includes('DM') ? 'Copy DM' : 'Copy Post'; }, 2000);
+    });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thank You — DataLearn</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #090d14;
+      --bg-2:    #161b22;
+      --bg-3:    #21262d;
+      --border:  #30363d;
+      --text-1:  #e6edf3;
+      --text-2:  #adbac7;
+      --text-3:  #768390;
+      --green:   #3fb950;
+      --blue:    #539bf5;
+      --gold:    #e3b341;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text-1);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+      text-align: center;
+    }
+
+    .card {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 48px 44px;
+      max-width: 560px;
+      width: 100%;
+    }
+
+    .check-icon {
+      width: 72px;
+      height: 72px;
+      background: rgba(63,185,80,.12);
+      border: 2px solid rgba(63,185,80,.4);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 28px;
+      font-size: 30px;
+      color: var(--green);
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 900;
+      margin-bottom: 12px;
+      letter-spacing: -.02em;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: var(--text-2);
+      line-height: 1.7;
+      margin-bottom: 36px;
+    }
+
+    .calc-box {
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px 28px;
+      margin-bottom: 28px;
+      text-align: left;
+    }
+
+    .calc-box-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--text-3);
+      margin-bottom: 14px;
+    }
+
+    .calc-link-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .calc-link {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--blue);
+      word-break: break-all;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .btn-access {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--green);
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity .15s;
+      white-space: nowrap;
+    }
+
+    .btn-access:hover { opacity: .85; text-decoration: none; }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 28px 0;
+    }
+
+    .next-steps {
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      font-size: 13.5px;
+      color: var(--text-2);
+      line-height: 1.6;
+    }
+
+    .step-num {
+      background: rgba(83,155,245,.12);
+      border: 1px solid rgba(83,155,245,.25);
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 800;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .footer-links {
+      margin-top: 36px;
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: var(--text-3);
+      text-decoration: none;
+      transition: color .15s;
+    }
+
+    .footer-links a:hover { color: var(--text-1); }
+
+    @media (max-width: 520px) {
+      .card { padding: 32px 20px; }
+      h1 { font-size: 22px; }
+      .calc-link-row { flex-direction: column; }
+      .btn-access { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+
+    <div class="check-icon">
+      <i class="fas fa-check"></i>
+    </div>
+
+    <h1>You're in. Thank you!</h1>
+    <p class="subtitle">
+      Your contribution means a lot — it goes directly toward building the next version of DataLearn.
+      Here's your instant access to the Data Analyst Calculator.
+    </p>
+
+    <!-- ── CALCULATOR ACCESS ── -->
+    <div class="calc-box">
+      <div class="calc-box-label">Your Reward — Data Analyst Calculator</div>
+      <div class="calc-link-row">
+        <div class="calc-link">Assets/calculators.html</div>
+        <a href="Assets/calculators.html" class="btn-access">
+          <i class="fas fa-calculator"></i> Open Calculator
+        </a>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- ── NEXT STEPS ── -->
+    <div class="next-steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>Bookmark the calculator link above so you always have it on hand.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>Head to <a href="index.html" style="color:var(--blue);">DataLearn</a> and start a lesson — your contribution unlocks the full curriculum.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>Share the campaign with a data analyst colleague — every share helps us reach the $40,000 goal.</div>
+      </div>
+    </div>
+
+    <div class="footer-links">
+      <a href="index.html"><i class="fas fa-database"></i> Go to DataLearn</a>
+      <a href="fundraiser.html"><i class="fas fa-heart"></i> View Campaign</a>
+    </div>
+
+  </div>
+
+</body>
+</html>

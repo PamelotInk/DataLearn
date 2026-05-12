@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome, Founding Patron — DataLearn</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #090d14;
+      --bg-2:    #161b22;
+      --bg-3:    #21262d;
+      --border:  #30363d;
+      --text-1:  #e6edf3;
+      --text-2:  #adbac7;
+      --text-3:  #768390;
+      --green:   #3fb950;
+      --blue:    #539bf5;
+      --gold:    #e3b341;
+      --gold-bg: rgba(227,179,65,.1);
+      --gold-br: rgba(227,179,65,.35);
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text-1);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+      text-align: center;
+    }
+
+    .patron-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--gold-bg);
+      border: 1px solid var(--gold-br);
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 5px 16px;
+      border-radius: 100px;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 48px 44px;
+      max-width: 600px;
+      width: 100%;
+    }
+
+    .crown-icon {
+      width: 76px;
+      height: 76px;
+      background: var(--gold-bg);
+      border: 2px solid var(--gold-br);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 28px;
+      font-size: 32px;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 900;
+      margin-bottom: 12px;
+      letter-spacing: -.02em;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: var(--text-2);
+      line-height: 1.7;
+      margin-bottom: 36px;
+    }
+
+    /* ── REWARD BOXES ── */
+    .reward-box {
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 22px 26px;
+      margin-bottom: 16px;
+      text-align: left;
+    }
+
+    .reward-box.gold-border {
+      border-color: var(--gold-br);
+      background: linear-gradient(135deg, var(--gold-bg), var(--bg-3));
+    }
+
+    .reward-box-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      margin-bottom: 14px;
+    }
+
+    .reward-box-label.green { color: var(--green); }
+    .reward-box-label.gold  { color: var(--gold); }
+
+    .reward-desc {
+      font-size: 13px;
+      color: var(--text-3);
+      margin-bottom: 14px;
+      line-height: 1.65;
+    }
+
+    .reward-link-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn-access {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--green);
+      color: #fff;
+      border: none;
+      padding: 11px 22px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity .15s;
+      white-space: nowrap;
+    }
+
+    .btn-access:hover { opacity: .85; text-decoration: none; }
+
+    .btn-access.gold-btn {
+      background: linear-gradient(135deg, var(--gold), #c98a00);
+      color: #000;
+    }
+
+    /* ── WHAT'S IN THE GUIDE ── */
+    .guide-contents {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 18px;
+      margin: 14px 0 0;
+      text-align: left;
+    }
+
+    .guide-contents-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--text-3);
+      margin-bottom: 12px;
+    }
+
+    .guide-categories {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .guide-cat {
+      font-size: 12.5px;
+      color: var(--text-2);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.5;
+    }
+
+    .guide-cat i {
+      color: var(--gold);
+      font-size: 11px;
+      margin-top: 3px;
+      flex-shrink: 0;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 28px 0;
+    }
+
+    /* ── NEXT STEPS ── */
+    .next-steps {
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      font-size: 13.5px;
+      color: var(--text-2);
+      line-height: 1.6;
+    }
+
+    .step-num {
+      background: rgba(83,155,245,.12);
+      border: 1px solid rgba(83,155,245,.25);
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 800;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .footer-links {
+      margin-top: 36px;
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: var(--text-3);
+      text-decoration: none;
+      transition: color .15s;
+    }
+
+    .footer-links a:hover { color: var(--text-1); }
+
+    @media (max-width: 520px) {
+      .card { padding: 32px 20px; }
+      h1 { font-size: 22px; }
+      .guide-categories { grid-template-columns: 1fr; }
+      .btn-access { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="patron-badge">
+    <i class="fas fa-crown"></i> Founding Patron
+  </div>
+
+  <div class="card">
+
+    <div class="crown-icon">👑</div>
+
+    <h1>Welcome, Founding Patron.</h1>
+    <p class="subtitle">
+      Your $100 contribution is deeply appreciated. You've unlocked the full DataLearn toolkit —
+      the calculator and the complete reference guide that makes you a more effective analyst, starting today.
+    </p>
+
+    <!-- ── REWARD 1: CALCULATOR ── -->
+    <div class="reward-box">
+      <div class="reward-box-label green">
+        <i class="fas fa-calculator"></i> &nbsp;Reward 1 — Data Analyst Calculator
+      </div>
+      <p class="reward-desc">13 professional calculators covering statistics, marketing KPIs, A/B testing, financial metrics, and more — all in one tool.</p>
+      <div class="reward-link-row">
+        <a href="Assets/calculators.html" class="btn-access">
+          <i class="fas fa-calculator"></i> Open Calculator
+        </a>
+      </div>
+    </div>
+
+    <!-- ── REWARD 2: GUIDE ── -->
+    <div class="reward-box gold-border">
+      <div class="reward-box-label gold">
+        <i class="fas fa-book-open"></i> &nbsp;Reward 2 — Calculator Reference Guide <span style="font-size:10px; font-weight:600; opacity:.7;">(Founding Patron Exclusive)</span>
+      </div>
+      <p class="reward-desc">
+        The official companion guide to the calculator — 13 in-depth entries covering every formula's purpose, exact inputs, how to read the results, which industries use it, and real-world worked scenarios. Built so you can use every calculator with full confidence, not just run the numbers.
+      </p>
+
+      <div class="guide-contents">
+        <div class="guide-contents-label">What's covered — 13 calculators, 5 categories</div>
+        <div class="guide-categories">
+          <div class="guide-cat"><i class="fas fa-check"></i>Percentage Change (MoM / YoY)</div>
+          <div class="guide-cat"><i class="fas fa-check"></i>Sample Size</div>
+          <div class="guide-cat"><i class="fas fa-check"></i>A/B Test Significance</div>
+          <div class="guide-cat"><i class="fas fa-check"></i>Confidence Interval</div>
+          <div class="guide-cat"><i class="fas fa-check"></i>Conversion Rate</div>
+          <div class="guide-cat"><i class="fas fa-check"></i>Customer Acquisition Cost</div>
+          <div class="guide-cat"><i class="fas fa-check"></i>Customer Lifetime Value</div>
+          <div class="guide-cat"><i class="fas fa-check"></i>Campaign ROAS</div>
+          <div class="guide-cat"><i class="fas fa-check"></i>ROI</div>
+          <div class="guide-cat"><i class="fas fa-check"></i>EBITDA Margin</div>
+          <div class="guide-cat"><i class="fas fa-check"></i>Budget Variance</div>
+          <div class="guide-cat"><i class="fas fa-check"></i>Churn Rate &amp; MRR Impact</div>
+          <div class="guide-cat"><i class="fas fa-check"></i>Forecast Accuracy (MAPE)</div>
+        </div>
+      </div>
+
+      <div class="reward-link-row" style="margin-top:16px;">
+        <a href="Assets/calculators-guide.html" class="btn-access gold-btn">
+          <i class="fas fa-book-open"></i> Open Reference Guide
+        </a>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- ── NEXT STEPS ── -->
+    <div class="next-steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>Bookmark both links above — the calculator for daily use, the guide whenever you need to understand a formula deeply.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>Head to <a href="index.html" style="color:var(--blue);">DataLearn</a> and start a lesson — your contribution unlocks the full curriculum.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>Share the campaign with a colleague — every share helps DataLearn reach its $40,000 goal and keeps growing.</div>
+      </div>
+    </div>
+
+    <div class="footer-links">
+      <a href="index.html"><i class="fas fa-database"></i> Go to DataLearn</a>
+      <a href="fundraiser.html"><i class="fas fa-heart"></i> View Campaign</a>
+    </div>
+
+  </div>
+
+</body>
+</html>

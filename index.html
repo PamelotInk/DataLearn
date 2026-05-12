@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DataLearn — SQL, Python & SAS for Data Analysts</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+
+  <!-- CodeMirror 5 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.css" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+
+  <!-- App Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    .fundraiser-banner {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: linear-gradient(90deg, #1a4a1a, #1f3a0f);
+      border-bottom: 1px solid #2e6b2e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 10px 20px;
+      flex-wrap: wrap;
+      text-align: center;
+    }
+    .fundraiser-banner span {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 13.5px;
+      color: #d4f5d4;
+    }
+    .fundraiser-banner strong { color: #53e053; }
+    .fundraiser-banner a.banner-cta {
+      background: #3fb950;
+      color: #fff;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 12.5px;
+      font-weight: 700;
+      padding: 5px 16px;
+      border-radius: 100px;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: opacity .15s;
+    }
+    .fundraiser-banner a.banner-cta:hover { opacity: .85; }
+    .banner-close {
+      background: none;
+      border: none;
+      color: #7acc7a;
+      font-size: 16px;
+      cursor: pointer;
+      margin-left: 4px;
+      line-height: 1;
+      padding: 2px 4px;
+    }
+    .banner-close:hover { color: #d4f5d4; }
+  </style>
+</head>
+<body>
+
+<!-- ── FUNDRAISER BANNER ── -->
+<div class="fundraiser-banner" id="fundraiserBanner">
+  <span>🚀 <strong>Support DataLearn</strong> — Help us raise $40,000 to expand the platform. Contribute &amp; get the <strong>Data Analyst Calculator included!</strong></span>
+  <a href="fundraiser.html" class="banner-cta">See the Campaign →</a>
+  <button class="banner-close" id="bannerClose" aria-label="Dismiss banner">✕</button>
+</div>
+<script>
+  (function(){
+    var b = document.getElementById('fundraiserBanner');
+    var c = document.getElementById('bannerClose');
+    if (sessionStorage.getItem('bannerDismissed')) b.style.display = 'none';
+    c.addEventListener('click', function(){
+      b.style.display = 'none';
+      sessionStorage.setItem('bannerDismissed', '1');
+    });
+  })();
+</script>
+
+<div id="app">
+
+  <!-- ─────── HEADER ─────── -->
+  <header class="app-header" id="appHeader">
+    <div class="header-brand">
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle sidebar">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="brand-logo">
+        <i class="fas fa-database"></i>
+        <span>DataLearn</span>
+      </div>
+    </div>
+
+    <nav class="header-lang-nav">
+      <button class="lang-pill active" data-lang="sql">
+        <i class="fas fa-table"></i><span>SQL</span>
+      </button>
+      <button class="lang-pill" data-lang="python">
+        <i class="fab fa-python"></i><span>Python</span>
+      </button>
+      <button class="lang-pill" data-lang="sas">
+        <i class="fas fa-chart-bar"></i><span>SAS</span>
+      </button>
+      <button class="lang-pill" data-lang="r">
+        <i class="fab fa-r-project"></i><span>R</span>
+      </button>
+      <button class="lang-pill" data-lang="excel">
+        <i class="fas fa-file-excel"></i><span>Excel</span>
+      </button>
+      <button class="lang-pill" data-lang="dbt">
+        <i class="fas fa-layer-group"></i><span>dbt</span>
+      </button>
+    </nav>
+
+    <div class="header-actions">
+      <div class="xp-display" id="xpDisplay">
+        <i class="fas fa-star"></i><span id="totalXP">0 XP</span>
+      </div>
+      <div class="progress-capsule" title="Lessons completed">
+        <span id="progressLabel">0 / 90</span>
+        <div class="mini-progress">
+          <div class="mini-progress-fill" id="miniProgressFill" style="width:0%"></div>
+        </div>
+      </div>
+      <button class="icon-btn" id="glossaryBtn" title="Full Glossary">
+        <i class="fas fa-book-open"></i>
+      </button>
+      <button class="icon-btn" id="exportBtn" title="Export Progress">
+        <i class="fas fa-file-export"></i>
+      </button>
+      <button class="icon-btn" id="importBtn" title="Import Progress">
+        <i class="fas fa-file-import"></i>
+      </button>
+      <button class="icon-btn" id="resetBtn" title="Reset All Progress">
+        <i class="fas fa-rotate-left"></i>
+      </button>
+    </div>
+  </header>
+  <input type="file" id="importFileInput" accept=".json" style="display:none">
+
+  <!-- ─────── APP BODY ─────── -->
+  <div class="app-body">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-top">
+        <div class="level-switcher">
+          <button class="level-btn active" data-level="basic">
+            <span class="level-dot basic"></span>Basic
+          </button>
+          <button class="level-btn" data-level="intermediate">
+            <span class="level-dot intermediate"></span>Mid
+          </button>
+          <button class="level-btn" data-level="advanced">
+            <span class="level-dot advanced"></span>Adv
+          </button>
+        </div>
+        <div class="level-progress-wrap">
+          <div class="level-progress-bar">
+            <div class="level-progress-fill" id="levelProgressFill" style="width:0%"></div>
+          </div>
+          <span class="level-progress-label" id="levelProgressLabel">0 / 5</span>
+        </div>
+      </div>
+      <div class="lesson-nav" id="lessonNav">
+        <!-- Populated dynamically -->
+      </div>
+    </aside>
+
+    <!-- MAIN AREA -->
+    <main class="main-area" id="mainArea">
+
+      <!-- ── WELCOME SCREEN ── -->
+      <div class="welcome-view" id="welcomeView">
+        <div class="welcome-hero">
+          <div class="welcome-badge"><i class="fas fa-graduation-cap"></i> Data Analyst Curriculum</div>
+          <h1>Learn <span class="hl sql">SQL</span>, <span class="hl python">Python</span>, <span class="hl sas">SAS</span>, <span class="hl r">R</span>, <span class="hl excel">Excel</span> &amp; <span class="hl dbt">dbt</span><br>the way analysts actually use them</h1>
+          <p class="welcome-sub">Real-world scenarios · Step-by-step explanations · Hands-on challenges<br>From beginner to advanced — at your own pace.</p>
+          <div class="welcome-stat-row">
+            <div class="welcome-stat"><strong>90</strong><span>Lessons</span></div>
+            <div class="welcome-stat"><strong>6</strong><span>Languages</span></div>
+            <div class="welcome-stat"><strong>3</strong><span>Skill Levels</span></div>
+            <div class="welcome-stat"><strong>Live</strong><span>SQL Engine</span></div>
+          </div>
+        </div>
+
+        <div class="lang-cards-row">
+          <div class="lang-card sql-card">
+            <div class="lc-icon sql-icon"><i class="fas fa-table"></i></div>
+            <h3>SQL</h3>
+            <p>SELECT, JOINs, GROUP BY, Window Functions, CTEs, and analytical query patterns used at every data-driven company.</p>
+            <div class="lc-meta"><span class="badge-basic">Basic</span><span class="badge-inter">Intermediate</span><span class="badge-adv">Advanced</span></div>
+            <div class="lc-count">15 Lessons</div>
+            <button class="btn-start" data-lang="sql">Start SQL <i class="fas fa-arrow-right"></i></button>
+          </div>
+
+          <div class="lang-card py-card">
+            <div class="lc-icon py-icon"><i class="fab fa-python"></i></div>
+            <h3>Python</h3>
+            <p>pandas DataFrames, data cleaning, groupby, merging, pivot tables, visualization, and statistical analysis.</p>
+            <div class="lc-meta"><span class="badge-basic">Basic</span><span class="badge-inter">Intermediate</span><span class="badge-adv">Advanced</span></div>
+            <div class="lc-count">15 Lessons</div>
+            <button class="btn-start" data-lang="python">Start Python <i class="fas fa-arrow-right"></i></button>
+          </div>
+
+          <div class="lang-card sas-card">
+            <div class="lc-icon sas-icon"><i class="fas fa-chart-bar"></i></div>
+            <h3>SAS</h3>
+            <p>DATA step, PROC procedures, formats, PROC SQL, macro programming, and statistical procedures for enterprise analytics.</p>
+            <div class="lc-meta"><span class="badge-basic">Basic</span><span class="badge-inter">Intermediate</span><span class="badge-adv">Advanced</span></div>
+            <div class="lc-count">15 Lessons</div>
+            <button class="btn-start" data-lang="sas">Start SAS <i class="fas fa-arrow-right"></i></button>
+          </div>
+
+          <div class="lang-card r-card">
+            <div class="lc-icon r-icon"><i class="fab fa-r-project"></i></div>
+            <h3>R</h3>
+            <p>Vectors, data frames, dplyr/tidyr/ggplot2, joins, strings, dates, linear &amp; logistic regression, purrr, and reproducible analysis.</p>
+            <div class="lc-meta"><span class="badge-basic">Basic</span><span class="badge-inter">Intermediate</span><span class="badge-adv">Advanced</span></div>
+            <div class="lc-count">15 Lessons</div>
+            <button class="btn-start" data-lang="r">Start R <i class="fas fa-arrow-right"></i></button>
+          </div>
+
+          <div class="lang-card excel-card">
+            <div class="lc-icon excel-icon"><i class="fas fa-file-excel"></i></div>
+            <h3>Excel</h3>
+            <p>XLOOKUP, SUMIFS, dynamic arrays, Pivot Tables, Power Query, named ranges, advanced charting, LAMBDA, and What-If Analysis for analysts.</p>
+            <div class="lc-meta"><span class="badge-basic">Basic</span><span class="badge-inter">Intermediate</span><span class="badge-adv">Advanced</span></div>
+            <div class="lc-count">15 Lessons</div>
+            <button class="btn-start" data-lang="excel">Start Excel <i class="fas fa-arrow-right"></i></button>
+          </div>
+
+          <div class="lang-card dbt-card">
+            <div class="lc-icon dbt-icon"><i class="fas fa-layer-group"></i></div>
+            <h3>dbt</h3>
+            <p>Transform raw warehouse data into analytics-ready models using SQL + Jinja. Sources, tests, documentation, macros, and CI/CD for analytics engineers.</p>
+            <div class="lc-meta"><span class="badge-basic">Basic</span><span class="badge-inter">Intermediate</span><span class="badge-adv">Advanced</span></div>
+            <div class="lc-count">15 Lessons</div>
+            <button class="btn-start" data-lang="dbt">Start dbt <i class="fas fa-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <div class="how-it-works">
+          <h2>How Every Lesson Works</h2>
+          <div class="how-grid">
+            <div class="how-step"><div class="how-num">1</div><h4>Real Scenario</h4><p>Each lesson starts with a workplace scenario — the kind of request your manager would actually make.</p></div>
+            <div class="how-step"><div class="how-num">2</div><h4>Learn the Concept</h4><p>Clear theory + terminology definitions before you write a single line of code.</p></div>
+            <div class="how-step"><div class="how-num">3</div><h4>Step-by-Step Code</h4><p>Follow a guided walkthrough. SQL runs live in your browser against a real database.</p></div>
+            <div class="how-step"><div class="how-num">4</div><h4>Solve the Challenge</h4><p>Apply what you've learned, use hints if needed, then reveal the solution and explanation.</p></div>
+          </div>
+        </div>
+      </div><!-- /welcome-view -->
+
+      <!-- ── LESSON VIEW ── -->
+      <div class="lesson-view" id="lessonView" style="display:none;">
+
+        <!-- Lesson Header -->
+        <div class="lesson-hdr" id="lessonHdr">
+          <div class="lesson-breadcrumb" id="lessonBreadcrumb">SQL › Basic</div>
+          <div class="lesson-title-row">
+            <h1 class="lesson-title" id="lessonTitle">Lesson Title</h1>
+            <div class="lesson-meta-row">
+              <span class="lm-badge" id="lessonDuration"><i class="fas fa-clock"></i> 15 min</span>
+              <span class="lm-badge xp-badge" id="lessonXP"><i class="fas fa-star"></i> 100 XP</span>
+              <button class="btn-complete" id="completeBtn">
+                <i class="fas fa-check"></i> Mark Complete
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab Bar -->
+        <div class="tab-bar" id="tabBar">
+          <button class="tab-btn active" data-tab="learn"><i class="fas fa-book-open"></i> Learn</button>
+          <button class="tab-btn" data-tab="practice"><i class="fas fa-flask"></i> Practice</button>
+          <button class="tab-btn" data-tab="challenge"><i class="fas fa-trophy"></i> Challenge</button>
+        </div>
+
+        <!-- ═══ LEARN TAB ═══ -->
+        <div class="tab-content active" id="tab-learn">
+
+          <!-- Scenario Card -->
+          <div class="scenario-card">
+            <div class="sc-eyebrow">
+              <i class="fas fa-briefcase"></i>
+              <span id="scRole">Junior Data Analyst</span>
+              <span class="sc-at">at</span>
+              <span id="scCompany">TechRetail Inc.</span>
+            </div>
+            <div class="sc-body" id="scBody">Scenario text…</div>
+          </div>
+
+          <!-- Objectives -->
+          <div class="section-card">
+            <h3 class="section-title"><i class="fas fa-bullseye"></i> Learning Objectives</h3>
+            <ul class="objectives-list" id="objectivesList"></ul>
+          </div>
+
+          <!-- Terminology -->
+          <div class="section-card">
+            <h3 class="section-title"><i class="fas fa-graduation-cap"></i> Key Terminology</h3>
+            <p class="term-hint">Click any term to see its definition.</p>
+            <div class="term-pills" id="termPills"></div>
+          </div>
+
+          <!-- Theory -->
+          <div class="section-card">
+            <h3 class="section-title"><i class="fas fa-lightbulb"></i> Concept Overview</h3>
+            <div class="theory-body" id="theoryBody"></div>
+          </div>
+
+          <!-- Step-by-Step Walkthrough -->
+          <div class="section-card walkthrough-card">
+            <div class="wt-header">
+              <h3 class="section-title"><i class="fas fa-list-ol"></i> Step-by-Step Walkthrough</h3>
+              <div class="step-nav">
+                <button class="step-nav-btn" id="prevStepBtn" disabled>
+                  <i class="fas fa-chevron-left"></i> Prev
+                </button>
+                <span class="step-counter" id="stepCounter">Step 1 of 3</span>
+                <button class="step-nav-btn" id="nextStepBtn">
+                  Next <i class="fas fa-chevron-right"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="step-dots" id="stepDots"></div>
+
+            <div class="step-panel" id="stepPanel">
+              <div class="step-hdr">
+                <div class="step-badge" id="stepBadge">Step 1</div>
+                <h4 class="step-title2" id="stepTitle2">Step Title</h4>
+              </div>
+              <div class="step-explanation" id="stepExplanation"></div>
+
+              <div class="editor-block">
+                <div class="editor-toolbar">
+                  <span class="editor-badge" id="stepEditorBadge">SQL</span>
+                  <div class="editor-toolbar-right">
+                    <button class="run-btn" id="runStepBtn"><i class="fas fa-play"></i> Run Code</button>
+                    <button class="icon-btn sm" id="copyStepBtn" title="Copy code"><i class="fas fa-copy"></i></button>
+                  </div>
+                </div>
+                <textarea id="stepCodeEditor" spellcheck="false"></textarea>
+                <div class="output-panel" id="stepOutput">
+                  <div class="output-placeholder">
+                    <i class="fas fa-play-circle"></i>
+                    <p>Click <strong>Run Code</strong> to see the result</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="step-note" id="stepNote" style="display:none;">
+                <i class="fas fa-info-circle"></i>
+                <span id="stepNoteText"></span>
+              </div>
+              <div class="step-after" id="stepAfter" style="display:none;"></div>
+            </div>
+          </div>
+
+          <!-- Insight -->
+          <div class="insight-card" id="insightCard">
+            <div class="insight-icon"><i class="fas fa-globe"></i></div>
+            <div class="insight-body">
+              <strong>Real-World Insight</strong>
+              <p id="insightText"></p>
+            </div>
+          </div>
+
+          <div class="learn-footer">
+            <button class="btn-primary" id="gotoPracticeBtn">
+              Go to Practice <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div><!-- /tab-learn -->
+
+        <!-- ═══ PRACTICE TAB ═══ -->
+        <div class="tab-content" id="tab-practice" style="display:none;">
+          <div class="practice-layout">
+            <div class="practice-left">
+              <div class="editor-toolbar">
+                <span class="editor-badge" id="practiceEditorBadge">SQL</span>
+                <div class="editor-toolbar-right">
+                  <button class="run-btn" id="runPracticeBtn"><i class="fas fa-play"></i> Run</button>
+                  <button class="btn-secondary sm" id="resetPracticeBtn"><i class="fas fa-rotate-left"></i> Reset</button>
+                  <button class="icon-btn sm" id="copyPracticeBtn" title="Copy"><i class="fas fa-copy"></i></button>
+                </div>
+              </div>
+              <textarea id="practiceCodeEditor" spellcheck="false"></textarea>
+            </div>
+            <div class="practice-right">
+              <div class="output-hdr">
+                <span>Output</span>
+                <span class="output-timing" id="practiceOutputTiming"></span>
+              </div>
+              <div class="output-panel" id="practiceOutput">
+                <div class="output-placeholder">
+                  <i class="fas fa-terminal"></i>
+                  <p>Write code above and click Run</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="sandbox-notice" id="sandboxNotice">
+            <i class="fas fa-database"></i>
+            <span>Live SQL sandbox — the full sample database is available. Try any query!</span>
+          </div>
+        </div><!-- /tab-practice -->
+
+        <!-- ═══ CHALLENGE TAB ═══ -->
+        <div class="tab-content" id="tab-challenge" style="display:none;">
+          <div class="challenge-card">
+            <div class="challenge-card-hdr">
+              <div class="challenge-trophy"><i class="fas fa-trophy"></i></div>
+              <div class="challenge-desc">
+                <h3 id="challengeTitle">Challenge</h3>
+                <p id="challengeScenario"></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="challenge-workspace">
+            <div class="challenge-left">
+              <div class="editor-toolbar">
+                <span class="editor-badge" id="challengeEditorBadge">SQL</span>
+                <div class="editor-toolbar-right">
+                  <button class="run-btn" id="runChallengeBtn"><i class="fas fa-play"></i> Run</button>
+                  <button class="hint-btn" id="hintBtn"><i class="fas fa-lightbulb"></i> Hint</button>
+                  <button class="solution-btn" id="solutionBtn"><i class="fas fa-key"></i> Solution</button>
+                </div>
+              </div>
+              <textarea id="challengeCodeEditor" spellcheck="false"></textarea>
+            </div>
+            <div class="challenge-right">
+              <div class="output-hdr"><span>Output</span></div>
+              <div class="output-panel" id="challengeOutput">
+                <div class="output-placeholder">
+                  <i class="fas fa-code"></i>
+                  <p>Write your solution and click Run</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="hint-box" id="hintBox" style="display:none;">
+            <i class="fas fa-lightbulb"></i>
+            <div><strong>Hint: </strong><span id="hintText"></span></div>
+          </div>
+
+          <div class="solution-box" id="solutionBox" style="display:none;">
+            <div class="solution-box-hdr">
+              <div><i class="fas fa-key"></i> <strong>Solution</strong></div>
+              <button class="icon-btn sm" id="copySolutionBtn" title="Copy solution"><i class="fas fa-copy"></i></button>
+            </div>
+            <pre class="solution-pre" id="solutionCode"></pre>
+            <div class="solution-expl" id="solutionExpl"></div>
+          </div>
+
+          <div class="success-banner" id="successBanner" style="display:none;">
+            <i class="fas fa-check-circle"></i>
+            <div>
+              <h4>Challenge Complete!</h4>
+              <p id="successMessage">Great work!</p>
+            </div>
+            <button class="btn-primary" id="nextLessonBtn">
+              Next Lesson <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+
+        </div><!-- /tab-challenge -->
+
+      </div><!-- /lesson-view -->
+
+    </main><!-- /main-area -->
+  </div><!-- /app-body -->
+
+  <!-- ─────── GLOSSARY MODAL ─────── -->
+  <div class="modal-backdrop" id="glossaryBackdrop" style="display:none;" role="dialog" aria-modal="true" aria-label="Glossary">
+    <div class="modal-box glossary-modal">
+      <div class="modal-hdr">
+        <h2><i class="fas fa-book-open"></i> Glossary</h2>
+        <button class="modal-close" id="closeGlossary" aria-label="Close"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-search">
+        <i class="fas fa-search"></i>
+        <input type="text" id="glossarySearch" placeholder="Search terms…" autocomplete="off" />
+      </div>
+      <div class="filter-chips" id="glossaryFilters">
+        <button class="chip active" data-gl-lang="all">All</button>
+        <button class="chip" data-gl-lang="sql">SQL</button>
+        <button class="chip" data-gl-lang="python">Python</button>
+        <button class="chip" data-gl-lang="sas">SAS</button>
+        <button class="chip" data-gl-lang="r">R</button>
+        <button class="chip" data-gl-lang="excel">Excel</button>
+        <button class="chip" data-gl-lang="dbt">dbt</button>
+      </div>
+      <div class="modal-body" id="glossaryBody"></div>
+    </div>
+  </div>
+
+  <!-- ─────── TERM POPUP ─────── -->
+  <div class="term-popup" id="termPopup" style="display:none;" role="tooltip">
+    <div class="term-popup-hdr">
+      <strong id="termPopupTitle">Term</strong>
+      <button class="term-popup-close" id="termPopupClose" aria-label="Close">×</button>
+    </div>
+    <p id="termPopupDef"></p>
+    <code class="term-popup-example" id="termPopupExample" style="display:none;"></code>
+  </div>
+
+  <!-- ─────── TOAST ─────── -->
+  <div class="toast" id="toast" role="status" aria-live="polite" style="display:none;">
+    <i class="fas fa-check-circle"></i>
+    <span id="toastMsg"></span>
+  </div>
+
+  <!-- ─────── CONFIRM MODAL ─────── -->
+  <div class="modal-backdrop" id="confirmBackdrop" style="display:none;">
+    <div class="modal-box confirm-modal">
+      <h3><i class="fas fa-exclamation-triangle"></i> Reset Progress?</h3>
+      <p>This will clear all your completed lessons and XP. This cannot be undone.</p>
+      <div class="confirm-actions">
+        <button class="btn-secondary" id="confirmCancel">Cancel</button>
+        <button class="btn-danger" id="confirmReset">Reset Everything</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<!-- ─────── SCRIPTS ─────── -->
+<!-- sql.js is loaded dynamically in app.js so it cannot block page init -->
+
+<!-- CodeMirror Core + Modes -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/sql/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/r/r.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/sql-hint.min.js"></script>
+
+<!-- App Data + Logic (order matters) -->
+<script src="js/db-setup.js"></script>
+<script src="js/lessons-sql.js"></script>
+<script src="js/lessons-python.js"></script>
+<script src="js/lessons-sas.js"></script>
+<script src="js/lessons-r.js"></script>
+<script src="js/lessons-excel.js"></script>
+<script src="js/lessons-dbt.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
