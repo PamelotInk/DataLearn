@@ -99,6 +99,17 @@ function $ (id) { return document.getElementById(id); }
 function $q(sel, ctx) { return (ctx || document).querySelector(sel); }
 function $a(sel, ctx) { return [...(ctx || document).querySelectorAll(sel)]; }
 
+/* ── Paywall ────────────────────────────────────────────── */
+function showPaywall() {
+  const el = document.getElementById('paywallOverlay');
+  if (el) { el.style.display = 'flex'; }
+}
+
+function dismissPaywall() {
+  const el = document.getElementById('paywallOverlay');
+  if (el) { el.style.display = 'none'; }
+}
+
 /* ── Boot ──────────────────────────────────────────────── */
 function initApp() {
   loadProgress();
@@ -1310,7 +1321,12 @@ function attachListeners() {
   /* ── Level buttons (sidebar) ── */
   $a('.level-btn').forEach(btn =>
     btn.addEventListener('click', () => {
-      STATE.level = btn.dataset.level;
+      const lvl = btn.dataset.level;
+      if (lvl === 'intermediate' || lvl === 'advanced') {
+        showPaywall();
+        return;
+      }
+      STATE.level = lvl;
       $a('.level-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       buildLessonNav();
