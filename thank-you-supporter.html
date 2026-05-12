@@ -81,7 +81,7 @@
       border: 1px solid var(--border);
       border-radius: 10px;
       padding: 24px 28px;
-      margin-bottom: 28px;
+      margin-bottom: 16px;
       text-align: left;
     }
 
@@ -90,7 +90,7 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: .1em;
-      color: var(--text-3);
+      color: var(--green);
       margin-bottom: 14px;
     }
 
@@ -110,7 +110,6 @@
       font-size: 13px;
       color: var(--blue);
       word-break: break-all;
-      font-family: 'JetBrains Mono', monospace;
     }
 
     .btn-access {
@@ -132,6 +131,50 @@
     }
 
     .btn-access:hover { opacity: .85; text-decoration: none; }
+
+    .upgrade-box {
+      background: rgba(83,155,245,.07);
+      border: 1px solid rgba(83,155,245,.25);
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin-bottom: 28px;
+      text-align: left;
+    }
+
+    .upgrade-box-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--blue);
+      margin-bottom: 8px;
+    }
+
+    .upgrade-box p {
+      font-size: 13.5px;
+      color: var(--text-2);
+      line-height: 1.65;
+      margin-bottom: 14px;
+    }
+
+    .btn-upgrade {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity .15s;
+    }
+
+    .btn-upgrade:hover { opacity: .85; text-decoration: none; }
 
     .divider {
       border: none;
@@ -204,15 +247,15 @@
       <i class="fas fa-check"></i>
     </div>
 
-    <h1>You're in. Thank you!</h1>
+    <h1>Thank you, Supporter!</h1>
     <p class="subtitle">
-      Your contribution means a lot — it goes directly toward building the next version of DataLearn.
+      Your $25 contribution is appreciated and goes directly toward building DataLearn.
       Here's your instant access to the Data Analyst Calculator.
     </p>
 
     <!-- ── CALCULATOR ACCESS ── -->
     <div class="calc-box">
-      <div class="calc-box-label">Your Reward — Data Analyst Calculator</div>
+      <div class="calc-box-label"><i class="fas fa-calculator"></i> &nbsp;Your Reward — Data Analyst Calculator</div>
       <div class="calc-link-row">
         <div class="calc-link">Assets/calculators.html</div>
         <a href="Assets/calculators.html" class="btn-access">
@@ -221,21 +264,30 @@
       </div>
     </div>
 
+    <!-- ── UPGRADE NUDGE ── -->
+    <div class="upgrade-box">
+      <div class="upgrade-box-label"><i class="fas fa-lock"></i> &nbsp;Want to unlock all lessons?</div>
+      <p>Upgrade to the $50 Champion tier to unlock all Intermediate and Advanced lessons across SQL, Python, SAS, R, Excel &amp; dbt — plus everything you already have.</p>
+      <a href="fundraiser.html" class="btn-upgrade">
+        <i class="fas fa-arrow-up"></i> Upgrade to $50
+      </a>
+    </div>
+
     <hr class="divider" />
 
     <!-- ── NEXT STEPS ── -->
     <div class="next-steps">
       <div class="step">
         <div class="step-num">1</div>
-        <div>Bookmark the calculator link above so you always have it on hand.</div>
+        <div>Bookmark the calculator link above — it's a tool you'll come back to regularly.</div>
       </div>
       <div class="step">
         <div class="step-num">2</div>
-        <div>Head to <a href="index.html" style="color:var(--blue);">DataLearn</a> — your $50 contribution unlocks all Intermediate and Advanced lessons across all 6 languages.</div>
+        <div>Head to <a href="index.html" style="color:var(--blue);">DataLearn</a> and explore the Basic lessons — all free to you.</div>
       </div>
       <div class="step">
         <div class="step-num">3</div>
-        <div>Share the campaign with a data analyst colleague — every share helps us reach the $40,000 goal.</div>
+        <div>Share the campaign with a colleague — every share helps DataLearn reach the $40,000 goal.</div>
       </div>
     </div>
 
