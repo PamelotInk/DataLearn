@@ -552,6 +552,7 @@ function showWelcome() {
   $('welcomeView').style.display = '';
   $('lessonView').style.display  = 'none';
   STATE.lessonId = null;
+  window.scrollTo(0, 0);
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -569,6 +570,7 @@ function loadLesson(id) {
 
   $('welcomeView').style.display = 'none';
   $('lessonView').style.display  = '';
+  window.scrollTo(0, 0);
 
   highlightNavItem(id);
   renderLessonHeader(lesson);
@@ -1288,7 +1290,7 @@ function showToast(msg) {
 function clearOutputEl(id) {
   const el = $(id);
   if (el) el.innerHTML =
-    '<div class="output-placeholder"><i class="fas fa-terminal"></i><p>Write code above and click Run</p></div>';
+    '<div class="output-placeholder"><i class="fas fa-terminal"></i><p>Write code to the left and click Run</p></div>';
 }
 
 function showError(el, msg, appendToExisting) {
