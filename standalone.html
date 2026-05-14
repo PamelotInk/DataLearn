@@ -3480,6 +3480,808 @@ const PYTHON_LESSONS = [
   insight:`Retention cohort analysis is the #1 tool for subscription businesses (Netflix, Spotify) and e-commerce (Amazon, Shopify stores). Low month-1 retention means your product isn't sticky; improving cohort curves is worth more than acquiring new customers.`
 }
 
+
+/* ── INTERMEDIATE 4 ───────────────────────────────────── */
+{
+  id:'py-inter-4', language:'python', level:'intermediate', order:4,
+  title:'Data Visualization — matplotlib & seaborn',
+  duration:'25 min', xp:160,
+  scenario:{
+    company:'RetailCo Analytics', role:'Data Analyst',
+    description:`Your weekly report currently lands in the CFO's inbox as a wall of numbers. She asks you to "make it visual." You'll use matplotlib for full control and seaborn for statistical plots — producing charts that could go straight into a board presentation.`
+  },
+  objectives:[
+    'Create bar, line, and scatter charts with matplotlib',
+    'Make publication-quality figures with seaborn',
+    'Customize titles, labels, and color palettes',
+    'Export figures to PNG for reports and emails'
+  ],
+  terminology:[
+    {term:'matplotlib',lang:'python',definition:'The foundational Python plotting library. Every other viz tool (seaborn, pandas .plot()) builds on it.',example:'import matplotlib.pyplot as plt'},
+    {term:'seaborn',lang:'python',definition:'A statistical visualization library built on matplotlib. Produces attractive figures with minimal code and integrates directly with DataFrames.',example:'import seaborn as sns'},
+    {term:'Figure / Axes',lang:'python',definition:'Figure = the overall canvas. Axes = individual plot panel. One Figure can hold multiple Axes (subplots).',example:'fig, ax = plt.subplots()\nax.bar(x, y)'},
+    {term:'plt.show()',lang:'python',definition:'Renders and displays the current figure. In a script, call once after all customization. In Jupyter, often automatic.',example:'plt.show()'},
+    {term:'savefig()',lang:'python',definition:'Saves the figure to a file. dpi controls resolution — 150 for screen, 300 for print.',example:"fig.savefig('chart.png', dpi=150, bbox_inches='tight')"},
+    {term:'hue=',lang:'python',definition:'seaborn parameter that assigns colors by a categorical column, automatically adding a legend.',example:"sns.barplot(data=df, x='dept', y='salary', hue='level')"}
+  ],
+  theory:`<h3>matplotlib vs seaborn — When to Use Which</h3>
+<p><strong>matplotlib</strong> gives you pixel-level control but requires verbose code. <strong>seaborn</strong> wraps matplotlib for statistical chart types (bar, box, violin, scatter with regression) and produces prettier defaults in a few lines. In practice: use seaborn for exploration and standard charts, drop to matplotlib when you need precise customization.</p>
+<div class="callout callout-tip"><i class="fas fa-lightbulb"></i><div>Always import both: <code>import matplotlib.pyplot as plt</code> and <code>import seaborn as sns</code>. Set a theme once with <code>sns.set_theme(style="whitegrid")</code> for clean, boardroom-ready charts.</div></div>
+<div class="callout callout-info"><i class="fas fa-code"></i><div><code>fig, ax = plt.subplots(figsize=(10, 6))<br>snss.barplot(data=df, x='dept', y='revenue', ax=ax)<br>ax.set_title('Revenue by Department')<br>plt.tight_layout()<br>plt.show()</code></div></div>`,
+  steps:[
+    {step:1, title:'Bar Chart with matplotlib',
+     explanation:`Create a department revenue bar chart — the most common chart in business analytics.`,
+     code:`import matplotlib.pyplot as plt
+import pandas as pd
+
+df = pd.DataFrame({
+    'department': ['Sales','Marketing','IT','Finance','Operations'],
+    'revenue':    [4.2, 1.8, 0.9, 0.6, 2.1],
+    'headcount':  [24,  12,  18,  8,   15]
+})
+
+fig, ax = plt.subplots(figsize=(9, 5))
+
+bars = ax.bar(df['department'], df['revenue'],
+              color=['#2563eb','#7c3aed','#059669','#d97706','#dc2626'])
+
+ax.set_title('Annual Revenue by Department ($M)', fontsize=14, fontweight='bold', pad=12)
+ax.set_xlabel('Department')
+ax.set_ylabel('Revenue ($M)')
+ax.set_ylim(0, 5)
+
+# Add value labels on each bar
+for bar in bars:
+    ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.05,
+            f'\${bar.get_height():.1f}M', ha='center', va='bottom', fontsize=10)
+
+plt.tight_layout()
+plt.savefig('dept_revenue.png', dpi=150, bbox_inches='tight')
+plt.show()
+print("Chart saved to dept_revenue.png")`,
+     simulatedOutput:{type:'text', content:`[Bar chart rendered: 5 bars showing department revenue]\nSales: $4.2M  Marketing: $1.8M  IT: $0.9M  Finance: $0.6M  Operations: $2.1M\n\nChart saved to dept_revenue.png`},
+     note:'figsize=(width, height) is in inches. bbox_inches="tight" prevents labels from being clipped when saving.',
+     after:'You have a publication-ready bar chart with labeled bars, a bold title, and png output suitable for email attachments.'},
+    {step:2, title:'Line Chart for Time Trends',
+     explanation:`Plot monthly revenue trend with seaborn — perfect for time series in executive dashboards.`,
+     code:`import seaborn as sns
+import matplotlib.pyplot as plt
+import pandas as pd
+
+sns.set_theme(style="whitegrid")
+
+monthly = pd.DataFrame({
+    'month':   ['Jan','Feb','Mar','Apr','May','Jun',
+                 'Jul','Aug','Sep','Oct','Nov','Dec'],
+    'revenue': [3.1, 3.4, 3.8, 4.0, 4.2, 4.5,
+                 4.3, 4.7, 5.1, 4.9, 5.3, 5.8],
+    'target':  [3.5]*12
+})
+
+fig, ax = plt.subplots(figsize=(11, 5))
+
+sns.lineplot(data=monthly, x='month', y='revenue',
+             marker='o', linewidth=2.5, color='#2563eb',
+             label='Actual Revenue', ax=ax)
+
+ax.plot(monthly['month'], monthly['target'],
+        '--', color='#dc2626', linewidth=1.5, label='Target')
+
+ax.fill_between(range(len(monthly)), monthly['revenue'],
+                monthly['target'],
+                where=(monthly['revenue'] >= monthly['target']),
+                alpha=0.1, color='green', label='Above Target')
+
+ax.set_title('Monthly Revenue vs Target (FY 2024)', fontsize=14, fontweight='bold')
+ax.set_xlabel('Month')
+ax.set_ylabel('Revenue ($M)')
+ax.legend()
+plt.tight_layout()
+plt.show()`,
+     simulatedOutput:{type:'text', content:`[Line chart rendered]\nActual Revenue line: upward trend from $3.1M (Jan) to $5.8M (Dec)\nTarget line: flat at $3.5M throughout year\nGreen shaded area: months Apr–Dec where actual > target\n\nKPI: Revenue exceeded target in 9 of 12 months (+120% target attainment in Dec)`},
+     note:'fill_between shades areas between two series — visually shows above/below target periods instantly.',
+     after:'A trend chart that\'s immediately readable: one glance shows the strong second-half performance and consistent target beat.'},
+    {step:3, title:'Scatter Plot and Subplots',
+     explanation:`Use subplots to show multiple charts on one figure — essential for dashboard-style reporting.`,
+     code:`import seaborn as sns
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+
+np.random.seed(42)
+df = pd.DataFrame({
+    'experience_yrs': np.random.randint(1, 20, 50),
+    'salary':         np.random.randint(45000, 150000, 50),
+    'department':     np.random.choice(['Sales','IT','Marketing','Finance'], 50),
+    'performance':    np.random.randint(60, 100, 50)
+})
+
+fig, axes = plt.subplots(1, 2, figsize=(13, 5))
+fig.suptitle('Employee Analytics Dashboard', fontsize=15, fontweight='bold')
+
+# Left: scatter plot
+sns.scatterplot(data=df, x='experience_yrs', y='salary',
+                hue='department', size='performance',
+                sizes=(40, 200), ax=axes[0], alpha=0.8)
+axes[0].set_title('Salary vs Experience by Department')
+axes[0].set_xlabel('Years of Experience')
+axes[0].set_ylabel('Annual Salary ($)')
+
+# Right: box plot
+sns.boxplot(data=df, x='department', y='salary',
+            palette='Set2', ax=axes[1])
+axes[1].set_title('Salary Distribution by Department')
+axes[1].set_xlabel('Department')
+axes[1].set_ylabel('Annual Salary ($)')
+axes[1].tick_params(axis='x', rotation=15)
+
+plt.tight_layout()
+plt.show()`,
+     simulatedOutput:{type:'text', content:`[Two-panel dashboard rendered]\n\nLeft panel (scatter): 50 data points colored by department\n  IT employees: higher salaries at lower experience (top-left cluster)\n  Sales: wider spread, experience correlates with salary\n  Point size = performance score\n\nRight panel (box plot):\n  IT median: ~$105K  |  Finance median: ~$98K\n  Sales median: ~$87K  |  Marketing median: ~$82K\n  IT shows tightest distribution; Sales has highest variance`},
+     after:'A two-panel dashboard in one figure. hue= adds color by category, size= scales point size by numeric value — both add information without adding complexity.'}
+  ],
+  challenge:{
+    title:'Sales Performance Dashboard',
+    description:`Create a 2-panel figure: (1) a horizontal bar chart of total sales by region (use barh), (2) a line chart showing monthly trend for the top region. Use a whitegrid theme and bold titles on both panels.`,
+    hint:`plt.subplots(1,2), ax.barh() for horizontal bars, filter df by top region for the line chart.`,
+    starterCode:`import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+
+sns.set_theme(style="whitegrid")
+
+regional = pd.DataFrame({
+    'region':  ['East','West','North','South','Central'],
+    'total':   [5.2, 4.8, 3.1, 2.9, 4.0]
+})
+
+monthly_east = pd.DataFrame({
+    'month':   ['Q1','Q2','Q3','Q4'],
+    'revenue': [1.1, 1.3, 1.4, 1.4]
+})
+
+fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+fig.suptitle('Sales Performance Dashboard', fontsize=14, fontweight='bold')
+
+# Panel 1: Horizontal bar chart by region
+# YOUR CODE HERE
+
+# Panel 2: Quarterly trend for East (top region)
+# YOUR CODE HERE
+
+plt.tight_layout()
+plt.show()`,
+    solution:`import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+
+sns.set_theme(style="whitegrid")
+
+regional = pd.DataFrame({
+    'region':  ['East','West','North','South','Central'],
+    'total':   [5.2, 4.8, 3.1, 2.9, 4.0]
+})
+monthly_east = pd.DataFrame({
+    'month':   ['Q1','Q2','Q3','Q4'],
+    'revenue': [1.1, 1.3, 1.4, 1.4]
+})
+
+fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+fig.suptitle('Sales Performance Dashboard', fontsize=14, fontweight='bold')
+
+regional_sorted = regional.sort_values('total')
+axes[0].barh(regional_sorted['region'], regional_sorted['total'], color='#2563eb')
+axes[0].set_title('Total Sales by Region ($M)', fontweight='bold')
+axes[0].set_xlabel('Revenue ($M)')
+
+sns.lineplot(data=monthly_east, x='month', y='revenue',
+             marker='o', color='#059669', ax=axes[1])
+axes[1].set_title('East Region — Quarterly Trend ($M)', fontweight='bold')
+axes[1].set_ylabel('Revenue ($M)')
+
+plt.tight_layout()
+plt.show()`,
+    explanation:`sort_values() before barh() puts the longest bar at the top. Sorting before a horizontal bar chart is almost always the right choice — it immediately shows the ranking.`,
+    successMessage:`Dashboard built! You can now turn any DataFrame into a polished, multi-panel visual in minutes.`
+  },
+  insight:`matplotlib and seaborn are used in ~85% of Python data teams. Learning to produce boardroom-quality visuals in code means your analysis is reproducible and version-controlled — unlike Excel charts. seaborn's hue= parameter alone can replace a pivot table + chart combo.`
+},
+
+/* ── INTERMEDIATE 5 ───────────────────────────────────── */
+{
+  id:'py-inter-5', language:'python', level:'intermediate', order:5,
+  title:'Reshaping Data — melt(), stack() & crosstab()',
+  duration:'22 min', xp:150,
+  scenario:{
+    company:'RetailCo Analytics', role:'Data Analyst',
+    description:`Your BI tool expects long-format data; the CSV you received is wide (one column per quarter). Your manager needs a cross-tabulation of region vs. product category by count. You'll master melt() to flip wide-to-long, and pd.crosstab() to build frequency matrices — two of the most practical data reshaping operations in an analyst's toolkit.`
+  },
+  objectives:[
+    'Use pd.melt() to convert wide format to long format',
+    'Use pivot_table() to go long-to-wide',
+    'Build cross-tabulation tables with pd.crosstab()',
+    'Normalize crosstabs to percentages'
+  ],
+  terminology:[
+    {term:'Wide Format',lang:'python',definition:'Each variable has its own column. Easy for humans to read; awkward for groupby/visualization code.',example:'Q1_revenue | Q2_revenue | Q3_revenue  (3 columns)'},
+    {term:'Long Format',lang:'python',definition:'Each row is one observation. Required by seaborn, ggplot2, and most BI tools.',example:'quarter | revenue  (rows: Q1→val, Q2→val, Q3→val)'},
+    {term:'pd.melt()',lang:'python',definition:'Converts wide format to long format by "melting" specified columns into rows.',example:"pd.melt(df, id_vars=['name'], value_vars=['Q1','Q2'], var_name='quarter', value_name='revenue')"},
+    {term:'pd.crosstab()',lang:'python',definition:'Computes a frequency/count table of two categorical Series. Equivalent to SQL GROUP BY two columns.',example:"pd.crosstab(df['region'], df['category'])"},
+    {term:'normalize=',lang:'python',definition:'In crosstab, normalize="index" gives row percentages, normalize="columns" gives column percentages, normalize=True gives grand total %.',example:"pd.crosstab(index, col, normalize='index')"}
+  ],
+  theory:`<h3>Wide vs Long — The Format That Determines Everything</h3>
+<p>Most raw data arrives in <strong>wide format</strong> (a column per period/metric) because it's human-readable in Excel. But Python visualization and analysis functions expect <strong>long format</strong> (a row per observation). <code>melt()</code> is the bridge.</p>
+<div class="callout callout-info"><i class="fas fa-code"></i><div><code># Wide → Long\npd.melt(df, id_vars=['product'],\n&nbsp;&nbsp;value_vars=['Jan','Feb','Mar'],\n&nbsp;&nbsp;var_name='month', value_name='sales')</code></div></div>
+<p><code>pd.crosstab()</code> is essentially a two-dimensional GROUP BY — instantly showing how observations are distributed across two categorical dimensions.</p>`,
+  steps:[
+    {step:1, title:'melt() — Wide to Long',
+     explanation:`A quarterly sales report arrives as a wide DataFrame. Melt it to long format for further analysis.`,
+     code:`import pandas as pd
+
+# Typical wide-format report (straight from Excel)
+wide = pd.DataFrame({
+    'product':    ['Laptop','Mouse','Monitor','Keyboard'],
+    'Q1_sales':   [320, 850, 215, 480],
+    'Q2_sales':   [380, 920, 260, 530],
+    'Q3_sales':   [410, 870, 290, 560],
+    'Q4_sales':   [450, 1050, 310, 620]
+})
+print("Wide format:")
+print(wide)
+print()
+
+# Melt to long format
+long = pd.melt(
+    wide,
+    id_vars=['product'],
+    value_vars=['Q1_sales','Q2_sales','Q3_sales','Q4_sales'],
+    var_name='quarter',
+    value_name='units_sold'
+)
+
+# Clean up quarter names
+long['quarter'] = long['quarter'].str.replace('_sales', '')
+long = long.sort_values(['product','quarter']).reset_index(drop=True)
+
+print("Long format (16 rows = 4 products × 4 quarters):")
+print(long.head(8))`,
+     simulatedOutput:{type:'text', content:`Wide format:\n   product  Q1_sales  Q2_sales  Q3_sales  Q4_sales\n0   Laptop       320       380       410       450\n1    Mouse       850       920       870      1050\n2  Monitor       215       260       290       310\n3 Keyboard       480       530       560       620\n\nLong format (16 rows = 4 products × 4 quarters):\n    product quarter  units_sold\n0  Keyboard      Q1         480\n1  Keyboard      Q2         530\n2  Keyboard      Q3         560\n3  Keyboard      Q4         620\n4    Laptop      Q1         320\n5    Laptop      Q2         380\n6    Laptop      Q3         410\n7    Laptop      Q4         450`},
+     note:'id_vars = columns to keep as-is. value_vars = columns to melt into rows. Now you can groupby("quarter") or plot a seaborn lineplot with hue="product".',
+     after:'16 rows instead of 4. Every BI tool, seaborn plot, and groupby call will now work correctly on this data.'},
+    {step:2, title:'Long Back to Wide with pivot_table()',
+     explanation:`Go in the reverse direction: reshape long format into a crosstab-style report with products as rows and quarters as columns.`,
+     code:`# Reverse: long → wide summary
+wide_again = long.pivot_table(
+    index='product',
+    columns='quarter',
+    values='units_sold',
+    aggfunc='sum'
+).astype(int)
+
+# Add a total column
+wide_again['Total'] = wide_again.sum(axis=1)
+wide_again = wide_again.sort_values('Total', ascending=False)
+
+print("Pivot: products × quarters (units sold)")
+print(wide_again)
+print()
+
+# YoY growth Q1 → Q4
+wide_again['Q1_to_Q4_growth_%'] = (
+    (wide_again['Q4'] - wide_again['Q1']) / wide_again['Q1'] * 100
+).round(1)
+print(wide_again[['Q1','Q4','Total','Q1_to_Q4_growth_%']])`,
+     simulatedOutput:{type:'text', content:`Pivot: products × quarters (units sold)\nquarter   Q1   Q2   Q3    Q4  Total\nproduct                              \nMouse     850  920  870  1050   3690\nKeyboard  480  530  560   620   2190\nLaptop    320  380  410   450   1560\nMonitor   215  260  290   310   1075\n\n          Q1   Q4  Total  Q1_to_Q4_growth_%\nMouse    850  1050   3690               23.5\nKeyboard 480   620   2190               29.2\nLaptop   320   450   1560               40.6\nMonitor  215   310   1075               44.2`},
+     after:'A management-ready summary table. Laptops and Monitors showed the highest growth despite lower volume — a key insight hidden in the raw data.'},
+    {step:3, title:'pd.crosstab() — Frequency Matrix',
+     explanation:`Build a cross-tabulation of region vs. category showing both counts and row percentages.`,
+     code:`import pandas as pd
+import numpy as np
+
+np.random.seed(7)
+orders = pd.DataFrame({
+    'region':   np.random.choice(['East','West','North','South'], 200),
+    'category': np.random.choice(['Electronics','Clothing','Food','Books'], 200),
+    'amount':   np.random.uniform(10, 500, 200).round(2)
+})
+
+# Count cross-tab
+ct_count = pd.crosstab(orders['region'], orders['category'],
+                        margins=True, margins_name='Total')
+print("Order Count by Region × Category:")
+print(ct_count)
+print()
+
+# Row-normalised (% of each region's orders per category)
+ct_pct = pd.crosstab(orders['region'], orders['category'],
+                      normalize='index').mul(100).round(1)
+print("Row % (how each region splits across categories):")
+print(ct_pct)`,
+     simulatedOutput:{type:'text', content:`Order Count by Region × Category:\ncategory  Books  Clothing  Electronics  Food  Total\nregion                                              \nEast         11        15           12    15     53\nNorth        11        12           14    12     49\nSouth        14        12           11    12     49\nWest         12        11           12    14     49\nTotal        48        50           49    53    200\n\nRow % (how each region splits across categories):\ncategory  Books  Clothing  Electronics  Food\nregion                                      \nEast       20.8      28.3         22.6  28.3\nNorth      22.4      24.5         28.6  24.5\nSouth      28.6      24.5         22.4  24.5\nWest       24.5      22.4         24.5  28.6`},
+     after:'The row % view reveals regional mix preferences. North has the highest Electronics share (28.6%); South leans toward Books (28.6%). These are insights for regional marketing strategy.'}
+  ],
+  challenge:{
+    title:'Annual Employee Survey Reshape',
+    description:`A survey dataset has one column per year (2021, 2022, 2023) for satisfaction scores. Melt it to long format. Then: (1) find the average score per department per year, (2) pivot back to a wide table showing departments as rows and years as columns.`,
+    hint:`pd.melt(id_vars=['employee_id','department'], value_vars=['2021','2022','2023'], var_name='year', value_name='score'), then groupby+pivot_table.`,
+    starterCode:`import pandas as pd
+
+survey = pd.DataFrame({
+    'employee_id': range(1,11),
+    'department':  ['Sales','Sales','IT','IT','Marketing','Marketing','Finance','Finance','Sales','IT'],
+    '2021':        [7, 8, 9, 6, 8, 7, 9, 8, 6, 9],
+    '2022':        [8, 7, 8, 7, 9, 8, 8, 9, 7, 8],
+    '2023':        [9, 9, 9, 8, 9, 9, 9, 9, 8, 9]
+})
+
+# Step 1: Melt to long format
+long_survey = pd.melt(
+    # YOUR CODE HERE
+)
+
+# Step 2: Average score per department per year
+avg_scores = long_survey.groupby(    )['score'].mean().round(2).reset_index()
+print("Average satisfaction scores:")
+print(avg_scores)
+
+# Step 3: Pivot to wide table (departments as rows, years as columns)
+pivot_scores = avg_scores.pivot_table(   )
+print("\nPivot table:")
+print(pivot_scores)`,
+    solution:`import pandas as pd
+
+survey = pd.DataFrame({
+    'employee_id': range(1,11),
+    'department':  ['Sales','Sales','IT','IT','Marketing','Marketing','Finance','Finance','Sales','IT'],
+    '2021':        [7, 8, 9, 6, 8, 7, 9, 8, 6, 9],
+    '2022':        [8, 7, 8, 7, 9, 8, 8, 9, 7, 8],
+    '2023':        [9, 9, 9, 8, 9, 9, 9, 9, 8, 9]
+})
+
+long_survey = pd.melt(
+    survey,
+    id_vars=['employee_id','department'],
+    value_vars=['2021','2022','2023'],
+    var_name='year',
+    value_name='score'
+)
+
+avg_scores = long_survey.groupby(['department','year'])['score'].mean().round(2).reset_index()
+print("Average satisfaction scores:")
+print(avg_scores)
+
+pivot_scores = avg_scores.pivot_table(
+    index='department', columns='year', values='score'
+)
+print("\nPivot table:")
+print(pivot_scores)`,
+    explanation:`melt() unpacks the year columns into rows. groupby(['department','year']) calculates per-cell averages. pivot_table() then reshapes back — but now with aggregated values instead of raw scores.`,
+    successMessage:`Data reshaping mastered! melt + groupby + pivot_table is a complete transformation pipeline that handles 90% of real-world report generation.`
+  },
+  insight:`Data reshaping is where junior analysts lose hours and senior analysts spend minutes. melt() and pivot_table() are the pandas equivalents of unpivot and pivot in SQL/Power Query. Every BI tool, visualization library, and statistical model expects your data in a specific shape — knowing how to move between formats instantly is one of the highest-leverage skills in analytics.`
+},
+
+/* ── ADVANCED 4 ───────────────────────────────────── */
+{
+  id:'py-adv-4', language:'python', level:'advanced', order:4,
+  title:'Machine Learning Foundations — sklearn Classification',
+  duration:'35 min', xp:200,
+  scenario:{
+    company:'RetailCo Analytics', role:'Senior Data Analyst',
+    description:`The finance team wants to predict which customers are likely to churn next quarter so the retention team can intervene proactively. You'll build a classification model using scikit-learn — the standard Python ML library — clean the features, train a Random Forest, evaluate performance, and score the customer base to produce a priority call list.`
+  },
+  objectives:[
+    'Prepare features and target with train/test split',
+    'Train a Random Forest classifier with sklearn',
+    'Evaluate with confusion matrix, accuracy, and classification report',
+    'Extract feature importance to explain the model'
+  ],
+  terminology:[
+    {term:'scikit-learn (sklearn)',lang:'python',definition:'The standard Python machine learning library. Consistent API: fit(), predict(), score() across all model types.',example:'from sklearn.ensemble import RandomForestClassifier'},
+    {term:'train_test_split',lang:'python',definition:'Splits data into training (model learns) and test (model is evaluated) sets. test_size=0.2 holds out 20% for testing.',example:'X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)'},
+    {term:'Feature Matrix (X)',lang:'python',definition:'The input DataFrame — all columns used to predict. Rows are observations; columns are features (predictors).',example:'X = df[["age","tenure","purchases","avg_spend"]]'},
+    {term:'Target Vector (y)',lang:'python',definition:'The column you are predicting — 1 column of labels (0=retained, 1=churned).',example:'y = df["churned"]'},
+    {term:'Confusion Matrix',lang:'python',definition:'A 2×2 table: True Positives, True Negatives, False Positives, False Negatives. Shows where the model makes errors.',example:'[[TN, FP], [FN, TP]]'},
+    {term:'Feature Importance',lang:'python',definition:'Scores showing how much each feature contributed to the model\'s predictions. Helps explain and audit the model.',example:'rf.feature_importances_  # array of scores summing to 1'}
+  ],
+  theory:`<h3>The sklearn API — Always the Same Pattern</h3>
+<ol><li>Import a model class</li><li><code>model.fit(X_train, y_train)</code> — train</li><li><code>model.predict(X_test)</code> — predict on new data</li><li><code>model.score(X_test, y_test)</code> — evaluate</li></ol>
+<div class="callout callout-tip"><i class="fas fa-lightbulb"></i><div>Random Forest is the best first model to try for classification: it handles mixed data types, rarely overfits with default settings, requires minimal preprocessing, and provides feature importance for explainability.</div></div>
+<div class="callout callout-warning"><i class="fas fa-exclamation-triangle"></i><div><strong>Accuracy alone is misleading</strong> on imbalanced datasets. If 90% of customers don't churn, a model predicting "never churn" gets 90% accuracy but is useless. Always look at precision, recall, and F1 for each class.</div></div>`,
+  steps:[
+    {step:1, title:'Prepare Features and Split Data',
+     explanation:`Build a realistic customer churn dataset, select features, handle any missing values, and split into train/test sets.`,
+     code:`import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+
+np.random.seed(42)
+n = 500
+
+df = pd.DataFrame({
+    'customer_id':    range(1, n+1),
+    'tenure_months':  np.random.randint(1, 72, n),
+    'monthly_spend':  np.random.uniform(20, 300, n).round(2),
+    'num_products':   np.random.randint(1, 6, n),
+    'support_calls':  np.random.randint(0, 15, n),
+    'last_login_days':np.random.randint(0, 180, n),
+    'nps_score':      np.random.randint(0, 11, n),
+})
+
+# Churn is more likely for low tenure, high support calls, low NPS
+churn_prob = (
+    (df['tenure_months'] < 12).astype(int) * 0.3 +
+    (df['support_calls'] > 8).astype(int) * 0.3 +
+    (df['nps_score'] < 4).astype(int) * 0.25 +
+    (df['last_login_days'] > 90).astype(int) * 0.15
+)
+df['churned'] = (churn_prob + np.random.uniform(-0.1, 0.1, n) > 0.4).astype(int)
+
+print(f"Dataset: {len(df)} customers  |  Churn rate: {df['churned'].mean():.1%}")
+
+FEATURES = ['tenure_months','monthly_spend','num_products',
+            'support_calls','last_login_days','nps_score']
+X = df[FEATURES]
+y = df['churned']
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y)
+
+print(f"Train: {len(X_train)} rows  |  Test: {len(X_test)} rows")
+print(f"Train churn rate: {y_train.mean():.1%}  |  Test churn rate: {y_test.mean():.1%}")`,
+     simulatedOutput:{type:'text', content:`Dataset: 500 customers  |  Churn rate: 32.4%\nTrain: 400 rows  |  Test: 100 rows\nTrain churn rate: 32.5%  |  Test churn rate: 32.0%`},
+     note:'stratify=y preserves the churn ratio in both train and test sets. Without it, you might get lucky/unlucky splits that skew results.',
+     after:'Clean train/test split with matching churn rates. The model will learn on 400 customers and be evaluated on 100 it has never seen.'},
+    {step:2, title:'Train and Evaluate the Model',
+     explanation:`Train a Random Forest classifier and evaluate it with a confusion matrix and classification report.`,
+     code:`from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import (confusion_matrix, classification_report,
+                              accuracy_score, roc_auc_score)
+
+rf = RandomForestClassifier(n_estimators=100, random_state=42, n_jobs=-1)
+rf.fit(X_train, y_train)
+
+y_pred = rf.predict(X_test)
+y_prob = rf.predict_proba(X_test)[:, 1]  # probability of churn
+
+print(f"Accuracy:  {accuracy_score(y_test, y_pred):.3f}")
+print(f"AUC-ROC:   {roc_auc_score(y_test, y_prob):.3f}")
+print()
+
+cm = confusion_matrix(y_test, y_pred)
+print("Confusion Matrix:")
+print(f"              Predicted: No  Predicted: Yes")
+print(f"Actual: No    {cm[0,0]:>12}  {cm[0,1]:>13}")
+print(f"Actual: Yes   {cm[1,0]:>12}  {cm[1,1]:>13}")
+print()
+print("Classification Report:")
+print(classification_report(y_test, y_pred,
+      target_names=['Retained','Churned']))`,
+     simulatedOutput:{type:'text', content:`Accuracy:  0.870\nAUC-ROC:   0.921\n\nConfusion Matrix:\n              Predicted: No  Predicted: Yes\nActual: No          62              6\nActual: Yes          7             25\n\nClassification Report:\n              precision  recall  f1-score  support\n  Retained       0.90    0.91      0.90       68\n   Churned       0.81    0.78      0.79       32\n  accuracy                         0.87      100\n macro avg       0.85    0.85      0.85      100`},
+     note:'AUC-ROC of 0.92 is excellent. Recall for Churned = 0.78 means we catch 78% of actual churners. Improving recall (catching more real churners) is usually the business goal.',
+     after:'6 customers we predicted would stay but actually churned (False Negatives) — these are missed intervention opportunities. 7 predicted to churn who stayed (False Positives) — unnecessary reach-out cost.'},
+    {step:3, title:'Feature Importance and Scoring New Customers',
+     explanation:`Understand which features drive the model, then score all customers with churn probabilities to build a priority call list.`,
+     code:`import pandas as pd
+
+# Feature importance
+importance_df = pd.DataFrame({
+    'feature':   FEATURES,
+    'importance': rf.feature_importances_
+}).sort_values('importance', ascending=False)
+
+print("Feature Importance (contribution to model decisions):")
+for _, row in importance_df.iterrows():
+    bar = '█' * int(row['importance'] * 40)
+    print(f"  {row['feature']:20} {row['importance']:.3f}  {bar}")
+
+# Score all active (non-churned) customers
+active_customers = df[df['churned'] == 0].copy()
+active_customers['churn_probability'] = rf.predict_proba(
+    active_customers[FEATURES])[:, 1].round(3)
+
+priority_list = (active_customers
+    .sort_values('churn_probability', ascending=False)
+    [['customer_id','tenure_months','support_calls',
+      'nps_score','churn_probability']]
+    .head(10))
+
+print(f"\nTop 10 At-Risk Customers (priority retention call list):")
+print(priority_list.to_string(index=False))`,
+     simulatedOutput:{type:'text', content:`Feature Importance (contribution to model decisions):\n  support_calls        0.241  █████████\n  nps_score            0.217  ████████\n  last_login_days      0.189  ███████\n  tenure_months        0.168  ██████\n  monthly_spend        0.107  ████\n  num_products         0.078  ███\n\nTop 10 At-Risk Customers (priority retention call list):\n customer_id  tenure_months  support_calls  nps_score  churn_probability\n         147              4             12          2             0.892\n         312              7             11          1             0.871\n          89              3             13          3             0.858\n         456              6             10          2             0.847\n         203              9             11          2             0.839\n          71              5             12          4             0.821\n         388              8             10          1             0.815\n         175              4             13          2             0.809\n         291              6             11          3             0.798\n          52             11              9          2             0.784`},
+     after:'Support calls and NPS score are the strongest churn predictors. Customer 147 — 4 months tenure, 12 support calls, NPS of 2 — has an 89.2% churn probability. Call them first.'}
+  ],
+  challenge:{
+    title:'Retrain with Threshold Tuning',
+    description:`The retention team says they can only call 20 customers per week. Using the model above, find the churn probability threshold that maximizes the number of true churners caught within a 20-customer budget. Print: the threshold, how many customers are flagged, and the precision and recall at that threshold.`,
+    hint:`Sort customers by churn_probability descending. Take top 20. Check how many are actual churners. Compute precision = true_churners/20, recall = true_churners/total_churners.`,
+    starterCode:`# Use X_test, y_test, y_prob from the steps above
+
+import pandas as pd
+
+results = pd.DataFrame({
+    'actual':      y_test.values,
+    'churn_prob':  y_prob
+}).sort_values('churn_prob', ascending=False).reset_index(drop=True)
+
+BUDGET = 20  # can only act on 20 customers
+
+# Top-20 by probability
+top20 = results.head(BUDGET)
+
+# YOUR CODE: calculate threshold, precision, recall
+threshold = 
+true_churners_caught = 
+total_actual_churners = 
+
+precision = 
+recall    = 
+
+print(f"Threshold (prob of #20 customer): {threshold:.3f}")
+print(f"True churners in top {BUDGET}: {true_churners_caught}")
+print(f"Precision at budget: {precision:.1%}")
+print(f"Recall at budget:    {recall:.1%}")`,
+    solution:`import pandas as pd
+
+results = pd.DataFrame({
+    'actual':     y_test.values,
+    'churn_prob': y_prob
+}).sort_values('churn_prob', ascending=False).reset_index(drop=True)
+
+BUDGET = 20
+top20 = results.head(BUDGET)
+
+threshold            = top20['churn_prob'].iloc[-1]
+true_churners_caught = top20['actual'].sum()
+total_actual_churners = results['actual'].sum()
+
+precision = true_churners_caught / BUDGET
+recall    = true_churners_caught / total_actual_churners
+
+print(f"Threshold (prob of #20 customer): {threshold:.3f}")
+print(f"True churners in top {BUDGET}: {true_churners_caught}")
+print(f"Precision at budget: {precision:.1%}")
+print(f"Recall at budget:    {recall:.1%}")`,
+    explanation:`Sorting by probability descending and slicing by budget is "top-k precision" — the real business metric for prioritized outreach. Most churn prevention campaigns run at a fixed budget, not a fixed threshold.`,
+    successMessage:`Model evaluation with business constraints mastered! Threshold tuning is the bridge between ML metrics and real operational decisions.`
+  },
+  insight:`Random Forest classifiers are the #1 most-used model in corporate analytics because they require minimal preprocessing, handle mixed data types, are hard to overfit, and provide feature importance for business explainability. sklearn's consistent API (fit → predict → score) means learning one model teaches you the interface for the entire library's 40+ models.`
+},
+
+/* ── ADVANCED 5 ───────────────────────────────────── */
+{
+  id:'py-adv-5', language:'python', level:'advanced', order:5,
+  title:'Automated Reporting Pipeline — pandas + Jinja2',
+  duration:'30 min', xp:200,
+  scenario:{
+    company:'RetailCo Analytics', role:'Senior Data Analyst',
+    description:`Every Monday you spend 2 hours copying numbers from a pandas report into a PowerPoint template. Your manager asks if it can be automated. You'll build a templated HTML report generator using pandas and Jinja2 — so any analyst can run one script and produce a formatted, stakeholder-ready HTML report populated with live data.`
+  },
+  objectives:[
+    'Build reusable analysis functions that return DataFrames',
+    'Use pandas Styler to add conditional formatting to tables',
+    'Use Jinja2 templates to inject data into HTML',
+    'Write a single-command report generation script'
+  ],
+  terminology:[
+    {term:'Jinja2',lang:'python',definition:'A Python templating engine. Write HTML with {{ variable }} placeholders, then render() with a dict to produce filled-in HTML.',example:"Template('Hello {{ name }}!').render(name='Alice')"},
+    {term:'pandas Styler',lang:'python',definition:'Adds CSS styling to a DataFrame rendered as HTML. Supports color gradients, conditional formatting, number formatting.',example:"df.style.background_gradient(cmap='Blues').to_html()"},
+    {term:'highlight_max()',lang:'python',definition:'Highlights the maximum value in each column or row with a background color.',example:"df.style.highlight_max(color='#d4edda')"},
+    {term:'format()',lang:'python',definition:'In Styler, applies number formatting to columns — currency, percentages, decimal places.',example:"df.style.format({'revenue': '\${:,.0f}', 'pct': '{:.1%}'})"},
+    {term:'Template.render()',lang:'python',definition:'Populates a Jinja2 template string with variables from a dict, returning the finished HTML string.',example:"html = template.render(title='Q4 Report', tables=tables_dict)"}
+  ],
+  theory:`<h3>Why Automated Reports Beat Manual Copy-Paste</h3>
+<ul><li><strong>Reproducible:</strong> run the same script next week — same structure, new data</li><li><strong>Error-free:</strong> no manual transposition mistakes</li><li><strong>Versioned:</strong> templates and logic live in git</li><li><strong>Fast delivery:</strong> seconds instead of hours</li></ul>
+<div class="callout callout-info"><i class="fas fa-code"></i><div><code>Pipeline: Load data → Transform → Style → Inject into template → Write HTML file</code></div></div>
+<div class="callout callout-tip"><i class="fas fa-lightbulb"></i><div>Jinja2 is installed with Flask and many other packages. If not available: <code>pip install jinja2</code>. It's also used in dbt — learning it here gives you a head start on dbt macros.</div></div>`,
+  steps:[
+    {step:1, title:'Build the Analysis Functions',
+     explanation:`Write modular functions that each return a clean DataFrame — the raw material for the report.`,
+     code:`import pandas as pd
+import numpy as np
+
+np.random.seed(99)
+
+# Simulate source data
+df = pd.DataFrame({
+    'region':    np.random.choice(['East','West','North','South'], 200),
+    'category':  np.random.choice(['Electronics','Clothing','Food'], 200),
+    'revenue':   np.random.uniform(100, 5000, 200).round(2),
+    'units':     np.random.randint(1, 50, 200),
+    'month':     np.random.choice(['Jan','Feb','Mar'], 200)
+})
+
+def revenue_by_region(data):
+    return (data.groupby('region')['revenue']
+            .agg(total_revenue='sum', avg_order='mean', orders='count')
+            .round(2)
+            .sort_values('total_revenue', ascending=False)
+            .reset_index())
+
+def category_summary(data):
+    return (data.groupby('category')
+            .agg(revenue=('revenue','sum'),
+                 units=('units','sum'))
+            .round(2)
+            .assign(revenue_per_unit=lambda x: (x.revenue/x.units).round(2))
+            .sort_values('revenue', ascending=False)
+            .reset_index())
+
+regional = revenue_by_region(df)
+cats     = category_summary(df)
+
+print("Regional Summary:")
+print(regional)
+print("\nCategory Summary:")
+print(cats)`,
+     simulatedOutput:{type:'dataframe', headers:['region','total_revenue','avg_order','orders'], rows:[['East',74213.45,1484.27,50],['West',72105.82,1442.12,50],['North',65891.33,1317.83,50],['South',58340.19,1166.80,50]]},
+     note:'Each function takes a DataFrame as input — making them testable and reusable across reports.',
+     after:'Two clean summary DataFrames, each answering one business question. The report will present both.'},
+    {step:2, title:'Style the Tables with pandas Styler',
+     explanation:`Apply conditional formatting — green/red highlights, currency formatting — to make numbers scannable at a glance.`,
+     code:`def style_regional(df):
+    return (df.style
+            .format({'total_revenue': '\${:,.0f}',
+                     'avg_order':     '\${:,.0f}',
+                     'orders':        '{:,}'})
+            .background_gradient(subset=['total_revenue'],
+                                  cmap='Blues')
+            .highlight_max(subset=['total_revenue'],
+                            color='#d4f0d4')
+            .highlight_min(subset=['total_revenue'],
+                            color='#f8d7da')
+            .set_table_attributes('class="report-table"')
+            .hide(axis='index'))
+
+def style_category(df):
+    return (df.style
+            .format({'revenue': '\${:,.0f}',
+                     'units':   '{:,}',
+                     'revenue_per_unit': '\${:,.2f}'})
+            .bar(subset=['revenue'], color='#4a90d9')
+            .set_table_attributes('class="report-table"')
+            .hide(axis='index'))
+
+# Render styled tables to HTML strings
+regional_html  = style_regional(regional).to_html()
+category_html  = style_category(cats).to_html()
+
+print("Styled HTML tables generated.")
+print(f"Regional table HTML: {len(regional_html):,} characters")
+print(f"Category table HTML: {len(category_html):,} characters")`,
+     simulatedOutput:{type:'text', content:`Styled HTML tables generated.\nRegional table HTML: 4,218 characters\nCategory table HTML: 2,891 characters\n\nRegional table features:\n  ✓ Revenue formatted as currency ($74,213)\n  ✓ Highest revenue row highlighted green\n  ✓ Lowest revenue row highlighted red\n  ✓ Blue gradient intensity tracks revenue level\n\nCategory table features:\n  ✓ Revenue bars show proportional size visually\n  ✓ Consistent currency and comma formatting`},
+     note:'to_html() converts the styled DataFrame to a self-contained HTML table string — ready to inject into a template.',
+     after:'Two HTML table strings with embedded CSS styling. The numbers are formatted, the top/bottom performers are color-coded.'},
+    {step:3, title:'Inject Into a Jinja2 Template',
+     explanation:`Write an HTML template with {{ placeholders }}, render it with the data, and write the finished report to a file.`,
+     code:`from jinja2 import Template
+from datetime import date
+
+TEMPLATE = """
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>{{ title }}</title>
+  <style>
+    body { font-family: Inter, Arial, sans-serif; max-width: 900px;
+           margin: 40px auto; color: #1e293b; }
+    h1   { color: #1d4ed8; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+    h2   { color: #475569; margin-top: 32px; }
+    .report-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+    .report-table td, .report-table th { padding: 8px 12px; border: 1px solid #e2e8f0; }
+    .report-table thead { background: #f1f5f9; font-weight: 600; }
+    .meta { color: #94a3b8; font-size: 13px; margin-bottom: 24px; }
+    .kpi  { display: flex; gap: 24px; margin: 20px 0; }
+    .kpi-card { background: #f8fafc; border-radius: 8px; padding: 16px 24px;
+                border-left: 4px solid #2563eb; }
+    .kpi-val  { font-size: 28px; font-weight: 700; color: #1d4ed8; }
+    .kpi-label{ font-size: 13px; color: #64748b; margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <h1>{{ title }}</h1>
+  <p class="meta">Generated: {{ report_date }} &nbsp;|&nbsp; Period: {{ period }}</p>
+  <div class="kpi">
+    <div class="kpi-card">
+      <div class="kpi-val">{{ total_revenue }}</div>
+      <div class="kpi-label">Total Revenue</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-val">{{ total_orders }}</div>
+      <div class="kpi-label">Total Orders</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-val">{{ top_region }}</div>
+      <div class="kpi-label">Top Region</div>
+    </div>
+  </div>
+  <h2>Revenue by Region</h2>
+  {{ regional_table }}
+  <h2>Category Performance</h2>
+  {{ category_table }}
+</body>
+</html>
+"""
+
+html = Template(TEMPLATE).render(
+    title        = 'Quarterly Sales Report — Q1 2025',
+    report_date  = date.today().strftime('%B %d, %Y'),
+    period       = 'January – March 2025',
+    total_revenue= f"\${df['revenue'].sum():,.0f}",
+    total_orders = f"{len(df):,}",
+    top_region   = regional.iloc[0]['region'],
+    regional_table = regional_html,
+    category_table = category_html
+)
+
+with open('q1_report.html', 'w', encoding='utf-8') as f:
+    f.write(html)
+
+print(f"Report written: q1_report.html ({len(html):,} bytes)")
+print(f"Open in browser to view the formatted report.")`,
+     simulatedOutput:{type:'text', content:`Report written: q1_report.html (12,847 bytes)\nOpen in browser to view the formatted report.\n\n=== Report Contents ===\nTitle:        Quarterly Sales Report — Q1 2025\nGenerated:    May 04, 2026\nPeriod:       January – March 2025\n\nKPI Cards:\n  Total Revenue:  $270,550\n  Total Orders:   200\n  Top Region:     East\n\nTables included:\n  ✓ Revenue by Region (4 rows, styled with gradient + highlights)\n  ✓ Category Performance (3 rows, styled with bar chart column)\n\nOutput: q1_report.html — open in any browser or email as attachment`},
+     after:'A complete, formatted HTML report built entirely from code. Change the data source, run the script — the report updates automatically every time.'}
+  ],
+  challenge:{
+    title:'Add a Month-over-Month Section',
+    description:`Extend the report: (1) calculate total revenue for each of the 3 months in the dataset, (2) compute MoM growth % (Feb vs Jan, Mar vs Feb), (3) style the MoM table with green for positive growth and red for negative, and (4) add it to the Jinja2 template between the KPI cards and the regional table.`,
+    hint:`groupby('month')['revenue'].sum(), pct_change(), applymap() or Styler.applymap(color_growth, subset=['mom_growth'])`,
+    starterCode:`import pandas as pd
+
+# Month order fix
+month_order = {'Jan':1,'Feb':2,'Mar':3}
+monthly = (df.groupby('month')['revenue'].sum()
+            .reset_index()
+            .assign(sort_key=lambda x: x['month'].map(month_order))
+            .sort_values('sort_key')
+            .drop(columns='sort_key'))
+
+# YOUR CODE: add mom_growth column (% change from previous month)
+monthly['mom_growth'] = 
+
+def color_growth(val):
+    color = 'background-color: #d4edda' if val > 0 else 'background-color: #f8d7da'
+    return color if pd.notna(val) else ''
+
+# Style the table
+monthly_styled = (monthly.style
+    .format({'revenue': '\${:,.0f}', 'mom_growth': lambda v: f'{v:+.1f}%' if pd.notna(v) else '—'})
+    # YOUR CODE: apply color_growth to mom_growth column
+    .hide(axis='index')
+    .to_html())
+
+print(monthly_styled[:500])  # preview first 500 chars of HTML`,
+    solution:`import pandas as pd
+
+month_order = {'Jan':1,'Feb':2,'Mar':3}
+monthly = (df.groupby('month')['revenue'].sum()
+            .reset_index()
+            .assign(sort_key=lambda x: x['month'].map(month_order))
+            .sort_values('sort_key')
+            .drop(columns='sort_key'))
+
+monthly['mom_growth'] = monthly['revenue'].pct_change() * 100
+
+def color_growth(val):
+    if pd.isna(val): return ''
+    return 'background-color: #d4edda' if val > 0 else 'background-color: #f8d7da'
+
+monthly_styled = (monthly.style
+    .format({'revenue': '\${:,.0f}',
+             'mom_growth': lambda v: f'{v:+.1f}%' if pd.notna(v) else '—'})
+    .applymap(color_growth, subset=['mom_growth'])
+    .hide(axis='index')
+    .to_html())
+
+print(monthly_styled[:500])`,
+    explanation:`pct_change() calculates month-over-month growth in one line — it divides each value by the previous row. applymap() applies a function cell-by-cell within the subset column, returning CSS strings that Styler embeds as inline styles.`,
+    successMessage:`Automated report with MoM analysis complete! You now have a reusable pipeline that any analyst on your team can run in seconds to produce a boardroom-ready HTML report.`
+  },
+  insight:`Automated reporting pipelines save analysts 4–8 hours per week. pandas + Jinja2 is the Python-native stack — no BI tool license required, works anywhere Python runs, and the output is email-friendly HTML. The same Jinja2 templating is used in dbt for SQL models and macros — cross-skill knowledge transfer.`
+}
+
+
 ]; // end PYTHON_LESSONS
 
 </script>
