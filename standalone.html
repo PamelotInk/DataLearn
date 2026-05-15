@@ -3478,7 +3478,7 @@ const PYTHON_LESSONS = [
     successMessage:`Cohort analysis complete! This is the most sophisticated standard analysis in e-commerce and SaaS — you can now build it from scratch in Python.`
   },
   insight:`Retention cohort analysis is the #1 tool for subscription businesses (Netflix, Spotify) and e-commerce (Amazon, Shopify stores). Low month-1 retention means your product isn't sticky; improving cohort curves is worth more than acquiring new customers.`
-}
+},
 
 
 /* ── INTERMEDIATE 4 ───────────────────────────────────── */
@@ -5024,6 +5024,448 @@ const SAS_LESSONS = [
     successMessage:`Credit risk model complete! PROC LOGISTIC powers credit scoring at banks worldwide. The same model structure — with different predictors — runs in healthcare (readmission risk), marketing (churn probability), and insurance (claim likelihood).`
   },
   insight:`PROC LOGISTIC is used by every major bank for Basel III credit risk models, by healthcare systems for readmission risk scoring, and by insurers for underwriting. SAS holds regulatory acceptance in these industries that newer tools are still working to achieve.`
+},
+
+/* ── BASIC 5 ────────────────────────────────────────── */
+{
+  id:'sas-basic-5', language:'sas', level:'basic', order:5,
+  title:'PROC UNIVARIATE — Detailed Distribution Analysis',
+  duration:'20 min', xp:120,
+  scenario:{
+    company:'Meridian Health Sciences', role:'Biostatistician I',
+    description:`The protocol requires a full distributional analysis of the primary endpoint (systolic blood pressure). You need more than PROC MEANS can provide — normality tests, percentiles, and extreme observations. PROC UNIVARIATE is the standard SAS procedure for this.`
+  },
+  objectives:[
+    'Run PROC UNIVARIATE to get detailed descriptive statistics',
+    'Use CLASS to compare distributions between groups',
+    'Request normality tests with the NORMAL option',
+    'Save statistics to a dataset with the OUTPUT statement'
+  ],
+  terminology:[
+    {term:'PROC UNIVARIATE',lang:'sas',definition:'Produces detailed univariate statistics: moments, quantiles, extreme observations, and optional normality tests.',example:'PROC UNIVARIATE DATA=mydata;\n  VAR sbp;\nRUN;'},
+    {term:'Shapiro-Wilk Test',lang:'sas',definition:'A normality test produced by the NORMAL option. p > 0.05 → fail to reject normality. p < 0.05 → evidence of non-normality.',example:'PROC UNIVARIATE NORMAL; VAR sbp; RUN;'},
+    {term:'Percentile / Quantile',lang:'sas',definition:'The value below which a given percentage falls. P25=Q1, P50=median, P75=Q3.',example:'Pct 25 = 118 means 25% of values are below 118'},
+    {term:'Skewness',lang:'sas',definition:'Measure of distribution asymmetry. 0=symmetric, positive=right-tailed, negative=left-tailed.',example:'Skewness = 1.4 → long right tail'},
+    {term:'OUTPUT statement',lang:'sas',definition:'Saves requested statistics (mean, median, percentiles, etc.) to a new SAS dataset for further use.',example:'OUTPUT OUT=stats MEAN=mean_val MEDIAN=median_val;'}
+  ],
+  theory:`<h3>When PROC MEANS Isn't Enough</h3>
+<p>PROC MEANS gives you mean, SD, min, max, and N. PROC UNIVARIATE adds:</p>
+<ul><li>Skewness and kurtosis (distribution shape)</li><li>Full percentile table (P1, P5, P10, Q1, Median, Q3, P90, P95, P99)</li><li>The 5 highest and 5 lowest observations</li><li>Shapiro-Wilk and other normality tests</li></ul>
+<div class="callout callout-tip"><i class="fas fa-lightbulb"></i><div>PROC UNIVARIATE with the NORMAL option is required in most FDA-submitted clinical trial protocols. The Shapiro-Wilk test is preferred for samples &lt; 2000.</div></div>`,
+  steps:[
+    {step:1, title:'Basic PROC UNIVARIATE',
+     explanation:`Run PROC UNIVARIATE on systolic blood pressure to get all standard distributional statistics.`,
+     code:`DATA work.bp_study;
+    INPUT patient_id sbp dbp age treatment $;
+    DATALINES;
+1  128 82 45 A
+2  141 90 62 B
+3  118 76 38 A
+4  155 98 71 B
+5  132 84 50 A
+6  144 92 58 B
+7  121 78 41 A
+8  162 102 75 B
+9  126 80 44 A
+10 148 94 65 B
+11 115 74 35 A
+12 157 99 72 B
+;
+RUN;
+
+PROC UNIVARIATE DATA=work.bp_study;
+    VAR sbp;
+    TITLE 'Distributional Analysis of Systolic Blood Pressure';
+RUN;`,
+     after:'Output includes N=12, mean, SD, skewness, kurtosis, all percentiles, and the 5 lowest/5 highest SBP values. The stem-and-leaf plot shows the distribution shape.'},
+    {step:2, title:'NORMAL Option — Normality Tests',
+     explanation:`Add the NORMAL option to request the Shapiro-Wilk statistic — required before choosing parametric vs non-parametric tests.`,
+     code:`PROC UNIVARIATE DATA=work.bp_study NORMAL PLOT;
+    VAR sbp dbp;
+    TITLE 'Normality Tests for Blood Pressure Variables';
+RUN;`,
+     note:'PLOT requests a stem-and-leaf and box plot. NORMAL adds Shapiro-Wilk (W), Kolmogorov-Smirnov (D), Anderson-Darling (A-Sq), and Cramér-von Mises (W-Sq) statistics.',
+     after:'For sbp: W≈0.962, p≈0.713 → fail to reject normality. Parametric tests (t-test, ANOVA) are appropriate for these outcomes.'},
+    {step:3, title:'CLASS and OUTPUT Statements',
+     explanation:`Compare SBP by treatment group and save key statistics to a dataset for reporting.`,
+     code:`PROC UNIVARIATE DATA=work.bp_study NORMAL;
+    CLASS treatment;
+    VAR sbp;
+    TITLE 'SBP by Treatment Group (A vs B)';
+RUN;
+
+/* Save statistics to a dataset */
+PROC UNIVARIATE DATA=work.bp_study;
+    VAR sbp;
+    OUTPUT OUT=work.sbp_stats
+        MEAN=mean_sbp
+        STD=std_sbp
+        MEDIAN=median_sbp
+        P25=q1_sbp
+        P75=q3_sbp
+        SKEWNESS=skew_sbp;
+RUN;
+
+PROC PRINT DATA=work.sbp_stats;
+    TITLE 'Saved SBP Statistics';
+RUN;`,
+     after:'Separate distributional output per treatment group shows Treatment B consistently higher. The OUTPUT dataset has one row with named statistics — ready to embed directly into a reporting macro.'}
+  ],
+  challenge:{
+    title:'Endpoint Distribution Package',
+    description:`Run PROC UNIVARIATE with CLASS=treatment and NORMAL option on both sbp and dbp. Save mean, median, P10, P90, and skewness for each to a dataset work.ep_stats. Print it.`,
+    hint:`PROC UNIVARIATE NORMAL; CLASS treatment; VAR sbp dbp; OUTPUT OUT=work.ep_stats MEAN=mean_sbp mean_dbp MEDIAN=... P10=... P90=... SKEWNESS=...;`,
+    starterCode:`PROC UNIVARIATE DATA=work.bp_study NORMAL;
+    CLASS treatment;
+    VAR sbp dbp;
+    OUTPUT OUT=work.ep_stats
+        /* Add keyword = name pairs here */
+        ;
+    TITLE 'Endpoint Distribution by Treatment';
+RUN;
+
+PROC PRINT DATA=work.ep_stats;
+    TITLE 'Distributional Statistics Dataset';
+RUN;`,
+    solution:`PROC UNIVARIATE DATA=work.bp_study NORMAL;
+    CLASS treatment;
+    VAR sbp dbp;
+    OUTPUT OUT=work.ep_stats
+        MEAN     = mean_sbp    mean_dbp
+        MEDIAN   = median_sbp  median_dbp
+        P10      = p10_sbp     p10_dbp
+        P90      = p90_sbp     p90_dbp
+        SKEWNESS = skew_sbp    skew_dbp;
+    TITLE 'Endpoint Distribution by Treatment';
+RUN;
+
+PROC PRINT DATA=work.ep_stats;
+    TITLE 'Distributional Statistics Dataset';
+RUN;`,
+    explanation:`When VAR lists multiple variables, the OUTPUT statement pairs keyword-generated names in order: first keyword name → first VAR variable, second name → second VAR variable.`,
+    successMessage:`PROC UNIVARIATE mastered! Complete distributional analysis is the mandatory step before choosing parametric tests in clinical and regulatory work.`
+  },
+  insight:`PROC UNIVARIATE is one of the five most-referenced PROCs in FDA SAP templates. The combination of NORMAL + CLASS + OUTPUT is standard practice in pharmaceutical submissions.`
+},
+
+/* ── INTERMEDIATE 5 ─────────────────────────────────── */
+{
+  id:'sas-inter-5', language:'sas', level:'intermediate', order:5,
+  title:'PROC TRANSPOSE — Reshaping SAS Datasets',
+  duration:'22 min', xp:160,
+  scenario:{
+    company:'Meridian Health Sciences', role:'Statistical Programmer',
+    description:`You receive a laboratory dataset in long format (one row per visit per test). The reporting macro expects wide format (one row per patient with separate columns for each visit). PROC TRANSPOSE is the SAS equivalent of an Excel pivot — the most-used reshaping tool in clinical programming.`
+  },
+  objectives:[
+    'Convert long format to wide format with PROC TRANSPOSE',
+    'Control output column names with PREFIX= and the ID statement',
+    'Go wide-to-long for statistical models',
+    'Use the BY statement to transpose within subject groups'
+  ],
+  terminology:[
+    {term:'PROC TRANSPOSE',lang:'sas',definition:'Rotates a SAS dataset: rows become columns (long→wide) or columns become rows (wide→long).',example:'PROC TRANSPOSE DATA=long OUT=wide PREFIX=visit_;\n  BY id; ID timepoint; VAR value;\nRUN;'},
+    {term:'BY Statement',lang:'sas',definition:'Transposes each BY group separately — one output row per BY group (per patient).',example:'BY patient_id;'},
+    {term:'ID Statement',lang:'sas',definition:'The variable whose values become the new column names.',example:'ID visit;  /* "V1","V2","V3" become column names */'},
+    {term:'VAR Statement',lang:'sas',definition:'The variable(s) whose values fill the new columns.',example:'VAR lab_value;'},
+    {term:'PREFIX=',lang:'sas',definition:'Prepends a string to column names when raw values aren\'t valid SAS variable names.',example:'PREFIX=v_  → v_V1  v_V2  v_V3'}
+  ],
+  theory:`<h3>Long vs Wide — The SAS Reporting Problem</h3>
+<p>Clinical data arrives long (patient × visit × variable). Reporting macros, PROC COMPARE, and table shells expect wide (one row per patient).</p>
+<div class="callout callout-info"><i class="fas fa-code"></i><div><code>Long: patient | visit | value<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;101   | V1   | 125     → Wide: 101 | sbp_V1=125 | sbp_V2=118<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;101   | V2   | 118</code></div></div>
+<div class="callout callout-warning"><i class="fas fa-exclamation-triangle"></i><div>PROC TRANSPOSE requires input to be <strong>sorted by the BY variable</strong>. Always run PROC SORT first or specify the NOTSORTED option with caution.</div></div>`,
+  steps:[
+    {step:1, title:'Long to Wide Transpose',
+     explanation:`Convert a longitudinal SBP dataset from long format (one row per visit) to wide (one row per patient, one column per visit).`,
+     code:`DATA work.lab_long;
+    INPUT patient_id visit $ sbp;
+    DATALINES;
+101 V1 128
+101 V2 122
+101 V3 119
+102 V1 145
+102 V2 140
+102 V3 138
+103 V1 132
+103 V2 128
+103 V3 125
+;
+RUN;
+
+PROC SORT DATA=work.lab_long;
+    BY patient_id;
+RUN;
+
+PROC TRANSPOSE DATA=work.lab_long
+               OUT=work.lab_wide(DROP=_NAME_)
+               PREFIX=sbp_;
+    BY patient_id;
+    ID visit;
+    VAR sbp;
+RUN;
+
+PROC PRINT DATA=work.lab_wide;
+    TITLE 'Wide: One Row Per Patient';
+RUN;`,
+     after:'3 rows (one per patient) with columns: patient_id, sbp_V1, sbp_V2, sbp_V3. DROP=_NAME_ removes the automatic tracking variable since it isn\'t needed here.'},
+    {step:2, title:'Wide to Long Transpose',
+     explanation:`Reverse direction — melt a wide dataset back to long format, needed for PROC MIXED or graphing.`,
+     code:`/* Wide-to-long using NAME= for the variable-name column */
+PROC TRANSPOSE DATA=work.lab_wide
+               OUT=work.lab_long2
+               NAME=visit;
+    BY patient_id;
+    VAR sbp_V1 sbp_V2 sbp_V3;
+RUN;
+
+DATA work.lab_long2;
+    SET work.lab_long2(RENAME=(COL1=sbp));
+    visit = COMPRESS(visit, 'sbp_');  /* strip "sbp_" prefix */
+RUN;
+
+PROC PRINT DATA=work.lab_long2;
+    TITLE 'Restored Long Format';
+RUN;`,
+     note:'When transposing wide-to-long without an ID, the output value column defaults to COL1. Rename it in the following DATA step. NAME=visit gives a meaningful name to the "original variable name" column.',
+     after:'9 rows again — one per patient per visit with clean visit and sbp columns. Ready for PROC MIXED longitudinal models.'},
+    {step:3, title:'Two-Measure Transpose with BY and ID',
+     explanation:`Transpose simultaneous measurements (SBP and DBP) at each visit using both the ID and VAR statements.`,
+     code:`DATA work.vitals_long;
+    INPUT patient_id visit $ measure $ value;
+    DATALINES;
+101 V1 SBP 128
+101 V1 DBP  82
+101 V2 SBP 122
+101 V2 DBP  78
+102 V1 SBP 145
+102 V1 DBP  91
+102 V2 SBP 140
+102 V2 DBP  88
+;
+RUN;
+
+PROC SORT DATA=work.vitals_long;
+    BY patient_id visit;
+RUN;
+
+PROC TRANSPOSE DATA=work.vitals_long
+               OUT=work.vitals_wide(DROP=_LABEL_)
+               PREFIX=v;
+    BY patient_id visit;
+    ID measure;
+    VAR value;
+RUN;
+
+PROC PRINT DATA=work.vitals_wide;
+    TITLE 'Wide: Patient × Visit with SBP and DBP Columns';
+RUN;`,
+     after:'Each patient × visit row has vSBP and vDBP columns — the format required by most CRF table shells and clinical listing macros.'}
+  ],
+  challenge:{
+    title:'Efficacy Score Pivot',
+    description:`4 patients, 3 time points (Baseline, Week4, Week8), one efficacy score each. Data is in long format. Transpose to wide, then calculate change-from-baseline (Week4 − Baseline and Week8 − Baseline) in a DATA step.`,
+    hint:`PROC SORT BY patient_id; PROC TRANSPOSE ... BY patient_id; ID timepoint; VAR score; Then DATA step: change_wk4 = Week4 - Baseline;`,
+    starterCode:`DATA work.scores;
+    INPUT patient_id timepoint $ score;
+    DATALINES;
+1 Baseline 72
+1 Week4    65
+1 Week8    58
+2 Baseline 81
+2 Week4    74
+2 Week8    69
+3 Baseline 68
+3 Week4    60
+3 Week8    53
+4 Baseline 77
+4 Week4    68
+4 Week8    62
+;
+RUN;
+
+PROC SORT DATA=work.scores; BY patient_id; RUN;
+
+PROC TRANSPOSE DATA=work.scores
+               OUT=work.scores_wide(DROP=_NAME_);
+    BY         ;
+    ID         ;
+    VAR        ;
+RUN;
+
+DATA work.scores_wide;
+    SET work.scores_wide;
+    /* Add change variables */
+RUN;
+
+PROC PRINT DATA=work.scores_wide; TITLE 'Score Summary'; RUN;`,
+    solution:`DATA work.scores;
+    INPUT patient_id timepoint $ score;
+    DATALINES;
+1 Baseline 72
+1 Week4    65
+1 Week8    58
+2 Baseline 81
+2 Week4    74
+2 Week8    69
+3 Baseline 68
+3 Week4    60
+3 Week8    53
+4 Baseline 77
+4 Week4    68
+4 Week8    62
+;
+RUN;
+
+PROC SORT DATA=work.scores; BY patient_id; RUN;
+
+PROC TRANSPOSE DATA=work.scores
+               OUT=work.scores_wide(DROP=_NAME_);
+    BY patient_id;
+    ID timepoint;
+    VAR score;
+RUN;
+
+DATA work.scores_wide;
+    SET work.scores_wide;
+    change_wk4 = Week4 - Baseline;
+    change_wk8 = Week8 - Baseline;
+RUN;
+
+PROC PRINT DATA=work.scores_wide;
+    TITLE 'Efficacy Score Summary with Change from Baseline';
+RUN;`,
+    explanation:`The ID=timepoint statement uses the timepoint values (Baseline, Week4, Week8) as column names. The subsequent DATA step then uses those column names in arithmetic — SAS treats them like any other numeric variable.`,
+    successMessage:`PROC TRANSPOSE mastered! Long-to-wide and wide-to-long are daily operations in clinical programming — you can now handle any reshaping requirement in SAS.`
+  },
+  insight:`PROC TRANSPOSE is one of the top-five most-used PROCs in pharmaceutical statistical programming. Every longitudinal trial needs reshaping: ADSL (one row per subject) derives from long adverse event records; change-from-baseline tables need wide format; mixed models need long. Mastering PROC TRANSPOSE means mastering every data shape transition in the development pipeline.`
+},
+
+/* ── ADVANCED 5 ─────────────────────────────────────── */
+{
+  id:'sas-adv-5', language:'sas', level:'advanced', order:5,
+  title:'PROC GENMOD — Generalized Linear Models',
+  duration:'35 min', xp:220,
+  scenario:{
+    company:'Meridian Health Sciences', role:'Senior Biostatistician',
+    description:`The Phase III trial uses a count outcome (number of adverse events per patient) — not normally distributed. A negative binomial regression is appropriate. PROC GENMOD handles non-normal outcomes (Poisson, negative binomial, logistic, gamma) under one unified framework — a cornerstone of regulatory biostatistics.`
+  },
+  objectives:[
+    'Fit a Poisson regression model for count outcomes',
+    'Diagnose overdispersion and switch to Negative Binomial',
+    'Interpret rate ratios (exponentials of log coefficients)',
+    'Use the REPEATED statement for GEE with correlated data'
+  ],
+  terminology:[
+    {term:'PROC GENMOD',lang:'sas',definition:'Fits generalized linear models for non-normal outcomes. Supports DIST= NORMAL, BINOMIAL, POISSON, NEGBIN, GAMMA.',example:'PROC GENMOD DATA=mydata;\n  CLASS treatment;\n  MODEL count = treatment age / DIST=POISSON LINK=LOG;\nRUN;'},
+    {term:'DIST=',lang:'sas',definition:'Distributional family. POISSON for counts, NEGBIN for overdispersed counts, BINOMIAL for binary outcomes.',example:'DIST=NEGBIN'},
+    {term:'LINK=',lang:'sas',definition:'Link function. LOG for count/Poisson, LOGIT for binary, IDENTITY for normal.',example:'LINK=LOG'},
+    {term:'Overdispersion',lang:'sas',definition:'In Poisson models, variance exceeds the mean. Deviance/DF > 1.5 indicates overdispersion → use NEGBIN.',example:'Deviance/DF = 3.2 → switch to NEGBIN'},
+    {term:'Rate Ratio',lang:'sas',definition:'The exponentiated regression coefficient in a Poisson/NegBin model — multiplicative factor on the event rate.',example:'exp(0.35) = 1.42 → 42% higher rate in group B vs A'},
+    {term:'GEE (REPEATED statement)',lang:'sas',definition:'Generalized Estimating Equations for correlated/repeated-measures data. REPEATED statement activates GEE in PROC GENMOD.',example:'REPEATED SUBJECT=patient_id / TYPE=AR(1);'}
+  ],
+  theory:`<h3>When to Use PROC GENMOD vs PROC REG</h3>
+<table style="width:100%;font-size:13px;border-collapse:collapse"><tr style="background:#f1f5f9"><th style="padding:6px;text-align:left">Outcome</th><th style="padding:6px;text-align:left">DIST=</th><th style="padding:6px;text-align:left">LINK=</th><th style="padding:6px;text-align:left">Coefficient → </th></tr><tr><td style="padding:6px">Count (# events)</td><td style="padding:6px">POISSON</td><td style="padding:6px">LOG</td><td style="padding:6px">exp() = rate ratio</td></tr><tr style="background:#f8fafc"><td style="padding:6px">Count (overdispersed)</td><td style="padding:6px">NEGBIN</td><td style="padding:6px">LOG</td><td style="padding:6px">exp() = rate ratio</td></tr><tr><td style="padding:6px">Binary (0/1)</td><td style="padding:6px">BINOMIAL</td><td style="padding:6px">LOGIT</td><td style="padding:6px">exp() = odds ratio</td></tr><tr style="background:#f8fafc"><td style="padding:6px">Positive continuous</td><td style="padding:6px">GAMMA</td><td style="padding:6px">LOG</td><td style="padding:6px">exp() = mean ratio</td></tr></table>`,
+  steps:[
+    {step:1, title:'Poisson Regression and Overdispersion Check',
+     explanation:`Fit a Poisson model for adverse event counts, then check if overdispersion requires switching to Negative Binomial.`,
+     code:`DATA work.ae_counts;
+    INPUT patient_id treatment $ age ae_count;
+    DATALINES;
+1  A 45  2
+2  B 62  8
+3  A 38  1
+4  B 71 11
+5  A 50  3
+6  B 58  9
+7  A 41  2
+8  B 67 14
+9  A 44  1
+10 B 65 10
+11 A 35  0
+12 B 72 12
+;
+RUN;
+
+PROC GENMOD DATA=work.ae_counts;
+    CLASS treatment(REF='A');
+    MODEL ae_count = treatment age / DIST=POISSON LINK=LOG;
+    TITLE 'Poisson Regression: AE Counts';
+RUN;`,
+     note:'Check "Criteria For Assessing Goodness Of Fit". Deviance/DF >> 1 signals overdispersion → switch to NEGBIN.',
+     after:'PROC GENMOD output shows log-scale regression coefficients. If Deviance/DF > 1.5, the Poisson assumption is violated and standard errors will be underestimated.'},
+    {step:2, title:'Negative Binomial Model',
+     explanation:`Switch to DIST=NEGBIN for overdispersed counts. Use ESTIMATE with EXP to get rate ratios directly.`,
+     code:`PROC GENMOD DATA=work.ae_counts;
+    CLASS treatment(REF='A');
+    MODEL ae_count = treatment age / DIST=NEGBIN LINK=LOG;
+    ESTIMATE 'TrtB vs A Rate Ratio' treatment 1 / EXP;
+    TITLE 'Negative Binomial: AE Counts (Overdispersion Corrected)';
+RUN;`,
+     after:'The NEGBIN Deviance/DF approaches 1.0 — well-fitting model. The ESTIMATE statement with EXP outputs the rate ratio and its 95% confidence interval directly, which is what goes into the clinical study report.'},
+    {step:3, title:'GEE for Repeated Measures',
+     explanation:`When patients have multiple observations, use the REPEATED statement to activate GEE — accounting for within-patient correlation.`,
+     code:`DATA work.ae_long;
+    INPUT patient_id visit treatment $ age ae_count;
+    DATALINES;
+1 1 A 45 1
+1 2 A 45 2
+1 3 A 45 0
+2 1 B 62 5
+2 2 B 62 7
+2 3 B 62 4
+3 1 A 38 0
+3 2 A 38 1
+3 3 A 38 0
+4 1 B 71 8
+4 2 B 71 9
+4 3 B 71 6
+;
+RUN;
+
+PROC SORT DATA=work.ae_long; BY patient_id visit; RUN;
+
+PROC GENMOD DATA=work.ae_long;
+    CLASS patient_id treatment(REF='A');
+    MODEL ae_count = treatment visit age / DIST=POISSON LINK=LOG;
+    REPEATED SUBJECT=patient_id / TYPE=UN CORRW;
+    TITLE 'GEE — Repeated Measures Poisson Regression';
+RUN;`,
+     after:'The REPEATED statement produces population-averaged (marginal) estimates with correct standard errors that account for within-patient correlation across visits. TYPE=UN estimates unstructured correlation; CORRW prints the estimated working correlation matrix.'}
+  ],
+  challenge:{
+    title:'Logistic GENMOD for Binary Outcome',
+    description:`Create a binary variable high_ae = 1 if ae_count > 5, else 0. Fit a PROC GENMOD logistic regression (DIST=BINOMIAL, LINK=LOGIT) with treatment and age as predictors. Use ESTIMATE with EXP for the treatment odds ratio.`,
+    hint:`DATA step: high_ae = (ae_count > 5); PROC GENMOD DIST=BINOMIAL LINK=LOGIT; ESTIMATE 'OR' treatment 1 / EXP;`,
+    starterCode:`DATA work.ae_binary;
+    SET work.ae_counts;
+    high_ae = (ae_count > 5);
+RUN;
+
+PROC GENMOD DATA=work.ae_binary;
+    CLASS treatment(REF='A');
+    MODEL high_ae = treatment age /
+        DIST=
+        LINK=;
+    ESTIMATE 'Trt B vs A Odds Ratio' treatment 1 / ;
+    TITLE 'Logistic via PROC GENMOD';
+RUN;`,
+    solution:`DATA work.ae_binary;
+    SET work.ae_counts;
+    high_ae = (ae_count > 5);
+RUN;
+
+PROC GENMOD DATA=work.ae_binary;
+    CLASS treatment(REF='A');
+    MODEL high_ae = treatment age /
+        DIST=BINOMIAL
+        LINK=LOGIT;
+    ESTIMATE 'Trt B vs A Odds Ratio' treatment 1 / EXP;
+    TITLE 'Logistic via PROC GENMOD';
+RUN;`,
+    explanation:`PROC GENMOD with DIST=BINOMIAL LINK=LOGIT produces the same parameter estimates as PROC LOGISTIC, but with the added flexibility of the ESTIMATE statement and GEE extension.`,
+    successMessage:`Generalized Linear Models mastered! PROC GENMOD handles count, binary, and skewed continuous outcomes under one framework — a cornerstone of regulatory biostatistics.`
+  },
+  insight:`PROC GENMOD is required knowledge for FDA statistical reviewers and pharmaceutical biostatisticians. Poisson/NegBin for safety counts, logistic for binary endpoints, gamma for healthcare costs, GEE for longitudinal data — all run through PROC GENMOD. The unified DIST= + LINK= + REPEATED framework means one procedure handles a dozen analyses.`
 }
 
 ]; // end SAS_LESSONS
