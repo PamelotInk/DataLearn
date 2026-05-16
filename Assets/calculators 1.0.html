@@ -103,78 +103,6 @@
       font-weight: 600;
     }
 
-    /* ── LOCK OVERLAY MODAL ───────────────────────── */
-    #lockOverlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.75);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
-    #lockOverlay.open { display: flex; }
-    .lock-card {
-      background: #1a1d27;
-      border: 1px solid #2a2d3e;
-      border-radius: 16px;
-      padding: 40px 36px;
-      max-width: 440px;
-      width: 100%;
-      text-align: center;
-    }
-    .lock-icon-ring {
-      width: 64px;
-      height: 64px;
-      background: rgba(79,142,247,.12);
-      border: 2px solid rgba(79,142,247,.3);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 26px;
-      margin: 0 auto 20px;
-    }
-    .lock-card h2 { font-size: 20px; font-weight: 800; margin-bottom: 10px; }
-    .lock-card p { font-size: 13.5px; color: #7b82a0; line-height: 1.65; margin-bottom: 24px; }
-    .lock-btn-primary {
-      display: inline-block;
-      background: #4f8ef7;
-      color: #fff;
-      text-decoration: none;
-      font-family: inherit;
-      font-size: 14px;
-      font-weight: 700;
-      padding: 11px 26px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      margin-bottom: 10px;
-      transition: opacity .15s;
-      width: 100%;
-    }
-    .lock-btn-primary:hover { opacity: .85; }
-    .lock-btn-dismiss {
-      background: none;
-      border: none;
-      color: #7b82a0;
-      font-size: 13px;
-      font-family: inherit;
-      cursor: pointer;
-      margin-top: 4px;
-      text-decoration: underline;
-    }
-    .lock-btn-dismiss:hover { color: #e2e6f0; }
-    /* locked nav button indicator */
-    nav button.locked .icon::after {
-      content: '🔒';
-      font-size: 9px;
-      position: relative;
-      top: -6px;
-      left: -4px;
-    }
-
     nav button .icon {
       font-size: 16px;
       width: 22px;
@@ -442,44 +370,44 @@
       <span class="icon">↕️</span><span class="label">% Change</span>
     </button>
     <div class="nav-cat">Statistics &amp; Experimentation</div>
-    <button class="locked" onclick="showLock()">
-      <span class="icon">🧮</span><span class="label">Sample Size 🔒</span>
+    <button onclick="showPanel('sample-size', this)">
+      <span class="icon">🧮</span><span class="label">Sample Size</span>
     </button>
-    <button class="locked" onclick="showLock()">
-      <span class="icon">🔬</span><span class="label">A/B Test 🔒</span>
+    <button onclick="showPanel('ab-test', this)">
+      <span class="icon">🔬</span><span class="label">A/B Test</span>
     </button>
-    <button class="locked" onclick="showLock()">
-      <span class="icon">📊</span><span class="label">Confidence Interval 🔒</span>
+    <button onclick="showPanel('conf-interval', this)">
+      <span class="icon">📊</span><span class="label">Confidence Interval</span>
     </button>
     <div class="nav-cat">Marketing &amp; CRM</div>
-    <button class="locked" onclick="showLock()">
-      <span class="icon">📈</span><span class="label">Conversion Rate 🔒</span>
+    <button onclick="showPanel('conversion', this)">
+      <span class="icon">📈</span><span class="label">Conversion Rate</span>
     </button>
-    <button class="locked" onclick="showLock()">
-      <span class="icon">🎯</span><span class="label">CAC 🔒</span>
+    <button onclick="showPanel('cac', this)">
+      <span class="icon">🎯</span><span class="label">CAC</span>
     </button>
-    <button class="locked" onclick="showLock()">
-      <span class="icon">💎</span><span class="label">Lifetime Value (CLV) 🔒</span>
+    <button onclick="showPanel('clv', this)">
+      <span class="icon">💎</span><span class="label">Lifetime Value (CLV)</span>
     </button>
-    <button class="locked" onclick="showLock()">
-      <span class="icon">📣</span><span class="label">Campaign ROAS 🔒</span>
+    <button onclick="showPanel('roas', this)">
+      <span class="icon">📣</span><span class="label">Campaign ROAS</span>
     </button>
     <div class="nav-cat">Financial</div>
-    <button class="locked" onclick="showLock()">
-      <span class="icon">💰</span><span class="label">ROI 🔒</span>
+    <button onclick="showPanel('roi', this)">
+      <span class="icon">💰</span><span class="label">ROI</span>
     </button>
-    <button class="locked" onclick="showLock()">
-      <span class="icon">🏦</span><span class="label">EBITDA Margin 🔒</span>
+    <button onclick="showPanel('ebitda', this)">
+      <span class="icon">🏦</span><span class="label">EBITDA Margin</span>
     </button>
-    <button class="locked" onclick="showLock()">
-      <span class="icon">📋</span><span class="label">Budget Variance 🔒</span>
+    <button onclick="showPanel('budget-var', this)">
+      <span class="icon">📋</span><span class="label">Budget Variance</span>
     </button>
     <div class="nav-cat">Product &amp; Ops</div>
-    <button class="locked" onclick="showLock()">
-      <span class="icon">🔄</span><span class="label">Churn &amp; MRR 🔒</span>
+    <button onclick="showPanel('churn', this)">
+      <span class="icon">🔄</span><span class="label">Churn &amp; MRR</span>
     </button>
-    <button class="locked" onclick="showLock()">
-      <span class="icon">🔮</span><span class="label">Forecast Accuracy 🔒</span>
+    <button onclick="showPanel('mape', this)">
+      <span class="icon">🔮</span><span class="label">Forecast Accuracy</span>
     </button>
   </nav>
 </aside>
@@ -1615,34 +1543,6 @@
     showResult('mape-result');
   }
 
-  /* ── LOCK MODAL ─────────────────────────────── */
-  function showLock() {
-    document.getElementById('lockOverlay').classList.add('open');
-  }
-  function dismissLock() {
-    document.getElementById('lockOverlay').classList.remove('open');
-  }
-  // Close on backdrop click
-  document.getElementById('lockOverlay').addEventListener('click', function(e) {
-    if (e.target === this) dismissLock();
-  });
-
 </script>
-
-<!-- ── LOCK MODAL ──────────────────────────────────────── -->
-<div id="lockOverlay">
-  <div class="lock-card">
-    <div class="lock-icon-ring">🔒</div>
-    <h2>Contributor Access Only</h2>
-    <p>
-      This calculator is part of the full <strong>Data Analyst Calculator</strong> — all 13 tools included.
-      It's yours when you back DataLearn at any tier starting at $25.
-    </p>
-    <a href="../fundraiser.html" class="lock-btn-primary">View Contribution Tiers →</a>
-    <br />
-    <button class="lock-btn-dismiss" onclick="dismissLock()">Continue with the free preview</button>
-  </div>
-</div>
-
 </body>
 </html>
