@@ -205,42 +205,52 @@
       letter-spacing: .06em;
     }
 
-    /* countdown */
-    .countdown-row {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-      flex-wrap: wrap;
-      margin-top: 28px;
-      padding-top: 24px;
-      border-top: 1px solid var(--border);
+    /* launch badge */
+    .goal-header {
+      margin-bottom: 24px;
     }
 
-    .cd-block {
-      display: flex;
-      flex-direction: column;
+    .launch-badge {
+      display: inline-flex;
       align-items: center;
-      gap: 4px;
-    }
-
-    .cd-num {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 32px;
-      font-weight: 600;
+      gap: 6px;
+      background: rgba(240,136,62,.12);
+      border: 1px solid rgba(240,136,62,.3);
       color: var(--orange);
-      min-width: 60px;
-      text-align: center;
-      background: var(--bg-3);
-      border: 1px solid var(--border);
-      border-radius: var(--r-sm);
-      padding: 6px 4px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 100px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
     }
 
-    .cd-label {
-      font-size: 11px;
+    .goal-target-main {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-2);
+      line-height: 1.4;
+    }
+
+    .goal-target-main strong {
+      color: var(--text-1);
+    }
+
+    /* countdown */
+    .cd-inline {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-size: 13px;
       color: var(--text-3);
-      text-transform: uppercase;
-      letter-spacing: .08em;
+      text-align: center;
+      letter-spacing: .03em;
+    }
+
+    .cd-inline strong {
+      color: var(--orange);
+      font-weight: 600;
     }
 
     /* ── SECTION WRAPPER ──────────────────────── */
@@ -655,19 +665,30 @@
   <!-- ── GOAL CARD ───────────────────────────────── -->
   <div class="section" style="padding-bottom:0;">
     <div class="goal-card">
-      <div class="goal-numbers">
-        <div class="goal-raised" id="raisedAmt">$0</div>
-        <div class="goal-target">goal: <strong style="color:var(--text-1)">$40,000</strong></div>
+      <!-- Launch header (always visible) -->
+      <div class="goal-header">
+        <div class="launch-badge"><i class="fas fa-rocket"></i> Just Launched</div>
+        <div class="goal-target-main">Raising <strong>$40,000</strong> to build the future of data education</div>
       </div>
-      <div class="goal-bar-track">
-        <div class="goal-bar-fill" id="goalBar" style="width:0%"></div>
+
+      <!-- Progress bar + raised amount (hidden until first donation) -->
+      <div id="progressSection" style="display:none">
+        <div class="goal-numbers">
+          <div class="goal-raised" id="raisedAmt">$0</div>
+          <div class="goal-target">of <strong style="color:var(--text-1)">$40,000</strong> goal</div>
+        </div>
+        <div class="goal-bar-track">
+          <div class="goal-bar-fill" id="goalBar" style="width:0%"></div>
+        </div>
       </div>
+
+      <!-- Stats: backers + funded hidden at zero; days left always shown -->
       <div class="goal-stats">
-        <div class="goal-stat">
+        <div class="goal-stat" id="statBackers" style="display:none">
           <strong id="backerCount">0</strong>
           <span>Backers</span>
         </div>
-        <div class="goal-stat">
+        <div class="goal-stat" id="statFunded" style="display:none">
           <strong id="pctFunded">0%</strong>
           <span>Funded</span>
         </div>
@@ -677,25 +698,8 @@
         </div>
       </div>
 
-      <!-- Countdown -->
-      <div class="countdown-row">
-        <div class="cd-block">
-          <div class="cd-num" id="cd-d">00</div>
-          <div class="cd-label">Days</div>
-        </div>
-        <div class="cd-block">
-          <div class="cd-num" id="cd-h">00</div>
-          <div class="cd-label">Hours</div>
-        </div>
-        <div class="cd-block">
-          <div class="cd-num" id="cd-m">00</div>
-          <div class="cd-label">Mins</div>
-        </div>
-        <div class="cd-block">
-          <div class="cd-num" id="cd-s">00</div>
-          <div class="cd-label">Secs</div>
-        </div>
-      </div>
+      <!-- Inline countdown -->
+      <div class="cd-inline" id="cdInline">—</div>
     </div>
   </div>
 
@@ -964,14 +968,21 @@
     const GOAL      = 40000;    // Fundraising goal
     const END_DATE  = new Date('2026-06-15T23:59:59');  // 30 days from campaign start (reset May 16, 2026)
 
-    // ── GOAL BAR ────────────────────────────────────
+    // ── GOAL PROGRESS (conditionally shown) ────────
     const pct = Math.min((RAISED / GOAL) * 100, 100);
-    document.getElementById('raisedAmt').textContent  = '$' + RAISED.toLocaleString();
-    document.getElementById('goalBar').style.width    = pct + '%';
-    document.getElementById('backerCount').textContent = BACKERS.toLocaleString();
-    document.getElementById('pctFunded').textContent  = pct.toFixed(1) + '%';
+    if (RAISED > 0) {
+      document.getElementById('progressSection').style.display = 'block';
+      document.getElementById('raisedAmt').textContent = '$' + RAISED.toLocaleString();
+      document.getElementById('goalBar').style.width   = pct + '%';
+      document.getElementById('statFunded').style.display = 'flex';
+      document.getElementById('pctFunded').textContent    = pct.toFixed(1) + '%';
+    }
+    if (BACKERS > 0) {
+      document.getElementById('statBackers').style.display = 'flex';
+      document.getElementById('backerCount').textContent   = BACKERS.toLocaleString();
+    }
 
-    // ── COUNTDOWN ───────────────────────────────────
+    // ── COUNTDOWN (inline text, updates every minute) ──
     function pad(n) { return String(n).padStart(2, '0'); }
 
     function tick() {
@@ -979,28 +990,22 @@
       const diff = END_DATE - now;
 
       if (diff <= 0) {
-        document.getElementById('cd-d').textContent =
-        document.getElementById('cd-h').textContent =
-        document.getElementById('cd-m').textContent =
-        document.getElementById('cd-s').textContent = '00';
         document.getElementById('daysLeft').textContent = '0';
+        document.getElementById('cdInline').innerHTML  = '<strong>Campaign ended</strong>';
         return;
       }
 
       const days    = Math.floor(diff / 86400000);
       const hours   = Math.floor((diff % 86400000) / 3600000);
       const minutes = Math.floor((diff % 3600000) / 60000);
-      const seconds = Math.floor((diff % 60000) / 1000);
 
-      document.getElementById('cd-d').textContent = pad(days);
-      document.getElementById('cd-h').textContent = pad(hours);
-      document.getElementById('cd-m').textContent = pad(minutes);
-      document.getElementById('cd-s').textContent = pad(seconds);
       document.getElementById('daysLeft').textContent = days;
+      document.getElementById('cdInline').innerHTML =
+        `<strong>${days}</strong> days &middot; <strong>${pad(hours)}</strong> hrs &middot; <strong>${pad(minutes)}</strong> mins remaining`;
     }
 
     tick();
-    setInterval(tick, 1000);
+    setInterval(tick, 60000);
   </script>
 
 </body>
