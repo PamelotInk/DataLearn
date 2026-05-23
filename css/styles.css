@@ -130,6 +130,8 @@ code, pre { font-family: var(--mono); }
 }
 .menu-toggle:hover { background: var(--bg-3); color: var(--text-1); }
 
+.brand-logo { cursor: pointer; transition: opacity .15s; user-select: none; }
+.brand-logo:hover { opacity: .75; }
 .brand-logo {
   display: flex; align-items: center; gap: 8px;
   font-size: 18px; font-weight: 800; letter-spacing: -.4px;

@@ -183,6 +183,8 @@ code, pre { font-family: var(--mono); }
 }
 .menu-toggle:hover { background: var(--bg-3); color: var(--text-1); }
 
+.brand-logo { cursor: pointer; transition: opacity .15s; user-select: none; }
+.brand-logo:hover { opacity: .75; }
 .brand-logo {
   display: flex; align-items: center; gap: 8px;
   font-size: 18px; font-weight: 800; letter-spacing: -.4px;
@@ -1270,7 +1272,7 @@ code, pre { font-family: var(--mono); }
       <button class="menu-toggle" id="menuToggle" aria-label="Toggle sidebar">
         <i class="fas fa-bars"></i>
       </button>
-      <div class="brand-logo">
+      <div class="brand-logo" onclick="showWelcome()" role="button" aria-label="Go to home screen" title="Home">
         <i class="fas fa-database"></i>
         <span>DataLearn</span>
       </div>
