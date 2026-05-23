@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>DataLearn Logo Exporter</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0d1117; color: #e6edf3;
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+      display: flex; flex-direction: column; align-items: center;
+      min-height: 100vh; padding: 40px 20px; gap: 28px;
+    }
+    h1 { font-size: 20px; font-weight: 800; color: #f89820; letter-spacing: -.4px; }
+    p.sub { font-size: 13px; color: #768390; margin-top: -18px; }
+    #logo { border-radius: 10px; box-shadow: 0 4px 32px rgba(0,0,0,.6);
+            max-width: 100%; height: auto; }
+    .controls {
+      display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;
+      background: #161b22; border: 1px solid #21262d;
+      border-radius: 10px; padding: 18px 24px;
+    }
+    .ctrl { display: flex; flex-direction: column; gap: 5px; min-width: 160px; }
+    .ctrl label { font-size: 11px; font-weight: 600; color: #768390;
+                  text-transform: uppercase; letter-spacing: .5px; }
+    select {
+      background: #21262d; color: #e6edf3; border: 1px solid #30363d;
+      border-radius: 6px; padding: 7px 10px; font-size: 13px;
+      font-family: inherit; cursor: pointer;
+    }
+    select:focus { outline: 2px solid #f89820; }
+    .btns { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+    button {
+      padding: 10px 20px; border: none; border-radius: 6px;
+      font-size: 13px; font-weight: 700; cursor: pointer;
+      font-family: inherit; transition: opacity .15s;
+    }
+    button:hover { opacity: .85; } button:active { opacity: .7; }
+    .btn-png { background: #f89820; color: #0d1117; }
+    .btn-jpg { background: #539bf5; color: #0d1117; }
+    .btn-gif { background: #986ee2; color: #fff; }
+    .btn-svg { background: #3fb950; color: #0d1117; }
+    #gifStatus { font-size: 12px; color: #768390; height: 16px; }
+
+    /* ── Photo Resizer ── */
+    .section-divider {
+      width: 100%; max-width: 680px;
+      border: none; border-top: 1px solid #21262d;
+      margin: 8px 0;
+    }
+    h2.section-title { font-size: 17px; font-weight: 800; color: #f89820; letter-spacing: -.3px; }
+    input[type=number], input[type=file] {
+      background: #21262d; color: #e6edf3; border: 1px solid #30363d;
+      border-radius: 6px; padding: 7px 10px; font-size: 13px;
+      font-family: inherit; width: 100%;
+    }
+    input[type=number]:focus, input[type=file]:focus { outline: 2px solid #f89820; }
+    input[type=file] { cursor: pointer; }
+    .lock-row { display: flex; align-items: center; gap: 8px; }
+    .lock-row input[type=checkbox] { width: 16px; height: 16px; accent-color: #f89820; cursor: pointer; }
+    .lock-row span { font-size: 12px; color: #e6edf3; }
+    .presets {
+      display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+      max-width: 680px;
+    }
+    .preset-btn {
+      background: #21262d; color: #e6edf3; border: 1px solid #30363d;
+      border-radius: 6px; padding: 7px 13px; font-size: 12px;
+      font-weight: 600; cursor: pointer; font-family: inherit;
+      transition: background .15s, border-color .15s;
+    }
+    .preset-btn:hover { background: #2d333b; border-color: #f89820; color: #f89820; }
+    .preset-btn.featured { border-color: #f89820; color: #f89820; }
+    #photoCanvas {
+      display: none; border-radius: 8px;
+      box-shadow: 0 4px 32px rgba(0,0,0,.6); max-width: 100%; height: auto;
+    }
+    #photoDims { font-size: 12px; color: #768390; height: 16px; }
+  </style>
+</head>
+<body>
+
+<h1>DataLearn Logo Exporter</h1>
+<p class="sub">Choose layout, size, and background — then download.</p>
+
+<canvas id="logo"></canvas>
+
+<div class="controls">
+  <div class="ctrl">
+    <label>Layout</label>
+    <select id="layoutSelect" onchange="updateSizes();draw()">
+      <option value="horizontal">Horizontal (wide)</option>
+      <option value="square">Square (icon + text)</option>
+      <option value="icon">Square (icon only)</option>
+    </select>
+  </div>
+  <div class="ctrl">
+    <label>Size</label>
+    <select id="sizeSelect" onchange="draw()"></select>
+  </div>
+  <div class="ctrl">
+    <label>Background</label>
+    <select id="bgSelect" onchange="draw()">
+      <option value="#0d1117">Dark (app default)</option>
+      <option value="#ffffff">White</option>
+      <option value="transparent">Transparent</option>
+    </select>
+  </div>
+</div>
+
+<div class="btns">
+  <button class="btn-png" onclick="save('png')">⬇ PNG</button>
+  <button class="btn-jpg" onclick="save('jpg')">⬇ JPG</button>
+  <button class="btn-gif" onclick="saveGIF()">⬇ GIF</button>
+  <button class="btn-svg" onclick="saveSVG()">⬇ SVG</button>
+</div>
+<div id="gifStatus"></div>
+
+<!-- ══════════════════════════════════════════════════════
+     PHOTO RESIZER SECTION
+══════════════════════════════════════════════════════ -->
+<hr class="section-divider"/>
+<h2 class="section-title">Photo Resizer</h2>
+<p class="sub">Upload any image and resize it to exact pixel dimensions.</p>
+
+<div class="controls">
+  <div class="ctrl" style="min-width:200px">
+    <label>Upload Photo</label>
+    <input type="file" id="photoInput" accept="image/*" onchange="loadPhoto(this)"/>
+  </div>
+  <div class="ctrl" style="justify-content:flex-end;padding-bottom:4px">
+    <label>Or Use Built-in</label>
+    <button class="btn-png" style="margin-top:2px;margin-bottom:6px" onclick="useLogoAsPhoto()">Use DataLearn Logo →</button>
+    <button class="btn-png" style="background:#3fb950" onclick="useBackgroundLogo()">Use Background Image →</button>
+  </div>
+  <div class="ctrl">
+    <label>Width (px)</label>
+    <input type="number" id="resizeW" value="180" min="1" max="8000" oninput="onWChange()"/>
+  </div>
+  <div class="ctrl">
+    <label>Height (px)</label>
+    <input type="number" id="resizeH" value="180" min="1" max="8000" oninput="onHChange()"/>
+  </div>
+  <div class="ctrl" style="justify-content:flex-end;padding-bottom:4px">
+    <label>Aspect Ratio</label>
+    <div class="lock-row">
+      <input type="checkbox" id="lockRatio" checked/>
+      <span>Lock ratio</span>
+    </div>
+  </div>
+</div>
+
+<p style="font-size:12px;color:#768390;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Social Media Presets</p>
+<div class="presets">
+  <button class="preset-btn featured" onclick="applyPreset(1200,627,'social-preview')">Social Preview (OG) — 1200×627</button>
+  <button class="preset-btn featured" onclick="applyPreset(180,180,'Facebook Profile')">Facebook Profile — 180×180</button>
+  <button class="preset-btn" onclick="applyPreset(820,312,'Facebook Cover')">Facebook Cover — 820×312</button>
+  <button class="preset-btn" onclick="applyPreset(400,400,'X (Twitter) Profile')">X Profile — 400×400</button>
+  <button class="preset-btn" onclick="applyPreset(1500,500,'X Banner')">X Banner — 1500×500</button>
+  <button class="preset-btn" onclick="applyPreset(1080,1080,'Instagram Post')">Instagram Post — 1080×1080</button>
+  <button class="preset-btn" onclick="applyPreset(320,320,'Instagram Profile')">Instagram Profile — 320×320</button>
+  <button class="preset-btn" onclick="applyPreset(800,800,'LinkedIn Profile')">LinkedIn Profile — 800×800</button>
+  <button class="preset-btn" onclick="applyPreset(1584,396,'LinkedIn Banner')">LinkedIn Banner — 1584×396</button>
+</div>
+
+<canvas id="photoCanvas"></canvas>
+<div id="photoDims"></div>
+
+<div class="btns" id="photoBtns" style="display:none">
+  <button class="btn-png" onclick="savePhoto('png')">⬇ PNG</button>
+  <button class="btn-jpg" onclick="savePhoto('jpg')">⬇ JPG</button>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   SIZE CONFIG
+═══════════════════════════════════════════════════════ */
+const SIZES = {
+  horizontal: [
+    { label:'320 × 80  (1×)',   w:320,  h:80  },
+    { label:'640 × 160 (2×)',   w:640,  h:160 },
+    { label:'960 × 240 (3×)',   w:960,  h:240 },
+    { label:'1280 × 320 (4×)', w:1280, h:320 }
+  ],
+  square: [
+    { label:'100 × 100',   w:100,  h:100  },
+    { label:'200 × 200',   w:200,  h:200  },
+    { label:'400 × 400',   w:400,  h:400  },
+    { label:'800 × 800',   w:800,  h:800  },
+    { label:'1200 × 1200', w:1200, h:1200 }
+  ],
+  icon: [
+    { label:'100 × 100', w:100, h:100 },
+    { label:'200 × 200', w:200, h:200 },
+    { label:'400 × 400', w:400, h:400 },
+    { label:'800 × 800', w:800, h:800 }
+  ]
+};
+
+function layout()  { return document.getElementById('layoutSelect').value; }
+function bg()      { return document.getElementById('bgSelect').value; }
+function sizeObj() {
+  const sel = document.getElementById('sizeSelect');
+  return SIZES[layout()][sel.selectedIndex] || SIZES[layout()][0];
+}
+
+function updateSizes() {
+  const sel = document.getElementById('sizeSelect');
+  sel.innerHTML = '';
+  SIZES[layout()].forEach((s, i) => {
+    const opt = document.createElement('option');
+    opt.textContent = s.label;
+    if (i === 1) opt.selected = true;
+    sel.appendChild(opt);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════
+   DRAW
+═══════════════════════════════════════════════════════ */
+function draw() {
+  const { w, h } = sizeObj();
+  const c = document.getElementById('logo');
+  c.width = w; c.height = h;
+  const ctx = c.getContext('2d');
+  ctx.clearRect(0, 0, w, h);
+
+  if (bg() !== 'transparent') {
+    ctx.fillStyle = bg();
+    roundRect(ctx, 0, 0, w, h, w * 0.04);
+    ctx.fill();
+  }
+
+  const L = layout();
+  if      (L === 'horizontal') drawHorizontal(ctx, w, h);
+  else if (L === 'square')     drawSquare(ctx, w, h);
+  else                         drawIconOnly(ctx, w, h);
+}
+
+function drawHorizontal(ctx, w, h) {
+  const s = w / 320;
+  drawIcon(ctx, 36*s, h/2, 18*s, 6*s, 22*s);
+  ctx.font = `800 ${30*s}px "Inter","Segoe UI",Arial,sans-serif`;
+  ctx.fillStyle = '#e6edf3';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('DataLearn', 68*s, h/2 + s);
+}
+
+function drawSquare(ctx, w, h) {
+  const s = w / 200, r = 40*s, ry = 13*s, bodyH = 50*s;
+  const iconTopCY = h * 0.20 + ry;
+  drawIcon(ctx, w/2, iconTopCY, r, ry, bodyH);
+  const textY = iconTopCY + bodyH + ry + 18*s;
+  ctx.font = `800 ${22*s}px "Inter","Segoe UI",Arial,sans-serif`;
+  ctx.fillStyle = '#e6edf3';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  ctx.fillText('DataLearn', w/2, textY);
+  ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+}
+
+function drawIconOnly(ctx, w, h) {
+  const r = w * 0.30, ry = r * 0.30, bodyH = r * 1.10;
+  drawIcon(ctx, w/2, h/2 - bodyH/2, r, ry, bodyH);
+}
+
+function drawIcon(ctx, cx, cy, r, ry, bodyH) {
+  ctx.fillStyle = '#f89820';
+  ctx.fillRect(cx - r, cy, r*2, bodyH);
+  ell(ctx, cx, cy + bodyH,   r, ry, '#c87010');
+  ell(ctx, cx, cy + bodyH/2, r, ry, '#faa830');
+  ell(ctx, cx, cy,           r, ry, '#ffc060');
+  ctx.globalAlpha = 0.45;
+  ell(ctx, cx - r*0.15, cy - ry*0.35, r*0.38, ry*0.50, '#ffd88a');
+  ctx.globalAlpha = 1;
+}
+
+function ell(ctx, x, y, rx, ry, color) {
+  ctx.beginPath(); ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI*2);
+  ctx.fillStyle = color; ctx.fill();
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x+r, y); ctx.lineTo(x+w-r, y);
+  ctx.quadraticCurveTo(x+w, y, x+w, y+r); ctx.lineTo(x+w, y+h-r);
+  ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h); ctx.lineTo(x+r, y+h);
+  ctx.quadraticCurveTo(x, y+h, x, y+h-r); ctx.lineTo(x, y+r);
+  ctx.quadraticCurveTo(x, y, x+r, y); ctx.closePath();
+}
+
+/* ═══════════════════════════════════════════════════════
+   SAVE — PNG / JPG
+═══════════════════════════════════════════════════════ */
+function filename(ext) {
+  const { w, h } = sizeObj();
+  return `DataLearn-logo-${layout()}-${w}x${h}.${ext}`;
+}
+
+function save(fmt) {
+  const mime = fmt === 'jpg' ? 'image/jpeg' : 'image/png';
+  const a = document.createElement('a');
+  a.download = filename(fmt);
+  a.href = document.getElementById('logo').toDataURL(mime, 1.0);
+  a.click();
+}
+
+/* ═══════════════════════════════════════════════════════
+   GIF ENCODER  (self-contained, no external libraries)
+═══════════════════════════════════════════════════════ */
+function saveGIF() {
+  const status = document.getElementById('gifStatus');
+  status.textContent = 'Encoding GIF…';
+  setTimeout(() => {
+    try {
+      const blob = new Blob([encodeGIF(document.getElementById('logo'))], { type:'image/gif' });
+      const a = document.createElement('a');
+      a.download = filename('gif');
+      a.href = URL.createObjectURL(blob);
+      a.click();
+      status.textContent = '✓ GIF downloaded!';
+      setTimeout(() => status.textContent = '', 3000);
+    } catch(e) { status.textContent = 'Error: ' + e.message; }
+  }, 20);
+}
+
+function encodeGIF(canvas) {
+  const w = canvas.width, h = canvas.height;
+  const raw = canvas.getContext('2d').getImageData(0, 0, w, h).data;
+
+  // Resolve background for transparent pixels
+  const hex = bg();
+  let bgR=13, bgG=17, bgB=23;
+  if (hex !== 'transparent') {
+    bgR = parseInt(hex.slice(1,3),16);
+    bgG = parseInt(hex.slice(3,5),16);
+    bgB = parseInt(hex.slice(5,7),16);
+  }
+
+  // Build palette (max 256)
+  const colorMap = new Map();
+  const pal = [];
+  const idx = new Uint16Array(w * h);
+
+  for (let i = 0; i < w*h; i++) {
+    const a = raw[i*4+3];
+    const r = a<128 ? bgR : raw[i*4];
+    const g = a<128 ? bgG : raw[i*4+1];
+    const b = a<128 ? bgB : raw[i*4+2];
+    const key = (r<<16)|(g<<8)|b;
+    let ci = colorMap.get(key);
+    if (ci === undefined) {
+      if (pal.length < 768) { ci = pal.length/3; colorMap.set(key,ci); pal.push(r,g,b); }
+      else { ci = nearestPal(r,g,b,pal); }
+    }
+    idx[i] = ci;
+  }
+
+  // Pad palette to power of 2 (min 4 entries)
+  let palBits = 2;
+  while ((1<<palBits) < pal.length/3) palBits++;
+  const palSize = 1<<palBits;
+  while (pal.length < palSize*3) pal.push(0,0,0);
+
+  const lzw = lzwEncode(idx, palBits, w*h);
+
+  // Assemble GIF
+  const out = [];
+  pushStr(out,'GIF89a');
+  pushU16(out,w); pushU16(out,h);
+  out.push(0x80|((palBits-1)<<4)|(palBits-1), 0, 0);
+  for (const v of pal) out.push(v);
+  out.push(0x2C); pushU16(out,0); pushU16(out,0); pushU16(out,w); pushU16(out,h); out.push(0);
+  out.push(palBits);
+  for (let i=0; i<lzw.length; i+=255) {
+    const chunk = lzw.slice(i, i+255);
+    out.push(chunk.length, ...chunk);
+  }
+  out.push(0, 0x3B);
+  return new Uint8Array(out);
+}
+
+function nearestPal(r,g,b,pal) {
+  let best=0, bestD=Infinity;
+  for (let i=0; i<pal.length; i+=3) {
+    const d=(r-pal[i])**2+(g-pal[i+1])**2+(b-pal[i+2])**2;
+    if (d<bestD){bestD=d; best=i/3;}
+  }
+  return best;
+}
+
+function lzwEncode(indices, minCode, len) {
+  const clear=1<<minCode, eoi=clear+1;
+  let codeSize=minCode+1, next=eoi+1, maxCode=1<<codeSize;
+  const buf=new Uint8Array(len*2+512);
+  let bitPos=0;
+
+  function out(code) {
+    let c=code, bits=codeSize;
+    while(bits--){ buf[bitPos>>3]|=((c&1)<<(bitPos&7)); c>>=1; bitPos++; }
+  }
+
+  const table=new Map();
+  function reset(){ table.clear(); codeSize=minCode+1; next=eoi+1; maxCode=1<<codeSize; }
+
+  out(clear); reset();
+  let prefix=indices[0];
+  for (let i=1; i<len; i++) {
+    const suf=indices[i], key=prefix*4096+suf;
+    const hit=table.get(key);
+    if (hit!==undefined) { prefix=hit; }
+    else {
+      out(prefix);
+      if (next<=4095){ table.set(key,next++); if(next>maxCode&&codeSize<12){codeSize++;maxCode<<=1;} }
+      else { out(clear); reset(); }
+      prefix=suf;
+    }
+  }
+  out(prefix); out(eoi);
+  return Array.from(buf.slice(0, Math.ceil(bitPos/8)));
+}
+
+function pushStr(a,s){ for(const c of s) a.push(c.charCodeAt(0)); }
+function pushU16(a,v){ a.push(v&0xFF,(v>>8)&0xFF); }
+
+/* ═══════════════════════════════════════════════════════
+   SVG EXPORT
+═══════════════════════════════════════════════════════ */
+function saveSVG() {
+  const { w, h } = sizeObj();
+  const fill = bg()==='transparent' ? 'none' : bg();
+  const L = layout();
+  let iconSVG='', textSVG='';
+
+  if (L==='horizontal') {
+    const s=w/320;
+    iconSVG = iconStr(36*s, h/2, 18*s, 6*s, 22*s);
+    textSVG = `<text x="${68*s}" y="${h/2+s}" dominant-baseline="middle"
+      font-family="'Inter','Segoe UI',Arial,sans-serif"
+      font-size="${30*s}" font-weight="800" fill="#e6edf3">DataLearn</text>`;
+  } else if (L==='square') {
+    const s=w/200, r=40*s, ry=13*s, bodyH=50*s, cy=h*0.20+ry;
+    iconSVG = iconStr(w/2, cy, r, ry, bodyH);
+    textSVG = `<text x="${w/2}" y="${cy+bodyH+ry+18*s}" text-anchor="middle"
+      font-family="'Inter','Segoe UI',Arial,sans-serif"
+      font-size="${22*s}" font-weight="800" fill="#e6edf3">DataLearn</text>`;
+  } else {
+    const r=w*0.30, ry=r*0.30, bodyH=r*1.10;
+    iconSVG = iconStr(w/2, h/2-bodyH/2, r, ry, bodyH);
+  }
+
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+  <rect width="${w}" height="${h}" rx="${(w*0.04).toFixed(1)}" fill="${fill}"/>
+  ${iconSVG}
+  ${textSVG}
+</svg>`;
+  const a = document.createElement('a');
+  a.download = filename('svg');
+  a.href = URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));
+  a.click();
+}
+
+function iconStr(cx,cy,r,ry,bodyH) {
+  return `<rect x="${cx-r}" y="${cy}" width="${r*2}" height="${bodyH}" fill="#f89820"/>
+  <ellipse cx="${cx}" cy="${cy+bodyH}" rx="${r}" ry="${ry}" fill="#c87010"/>
+  <ellipse cx="${cx}" cy="${cy+bodyH/2}" rx="${r}" ry="${ry}" fill="#faa830"/>
+  <ellipse cx="${cx}" cy="${cy}" rx="${r}" ry="${ry}" fill="#ffc060"/>
+  <ellipse cx="${cx-r*0.15}" cy="${cy-ry*0.35}" rx="${r*0.38}" ry="${ry*0.50}" fill="#ffd88a" opacity="0.45"/>`;
+}
+
+/* ═══════════════════════════════════════════════════════
+   PHOTO RESIZER
+═══════════════════════════════════════════════════════ */
+let uploadedImage = null;
+let origW = 0, origH = 0;
+let lastPresetName = '';
+
+function useLogoAsPhoto() {
+  const logoCanvas = document.getElementById('logo');
+  const img = new Image();
+  img.onload = () => {
+    uploadedImage = img;
+    origW = logoCanvas.width;
+    origH = logoCanvas.height;
+    document.getElementById('resizeW').value = origW;
+    document.getElementById('resizeH').value = origH;
+    resizePhoto();
+  };
+  img.src = logoCanvas.toDataURL('image/png');
+}
+
+function useBackgroundLogo() {
+  const img = new Image();
+  img.onload = () => {
+    uploadedImage = img;
+    origW = img.naturalWidth;
+    origH = img.naturalHeight;
+    document.getElementById('resizeW').value = origW;
+    document.getElementById('resizeH').value = origH;
+    resizePhoto();
+  };
+  img.onerror = () => alert('Could not load favicon.png — make sure the file exists in the root folder.');
+  img.src = '../favicon.png?' + Date.now(); // cache-bust
+}
+
+function loadPhoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      uploadedImage = img;
+      origW = img.naturalWidth;
+      origH = img.naturalHeight;
+      // Default to 180×180 (Facebook) on first load
+      document.getElementById('resizeW').value = 180;
+      document.getElementById('resizeH').value = 180;
+      resizePhoto();
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function applyPreset(w, h, name) {
+  lastPresetName = name;
+  document.getElementById('resizeW').value = w;
+  document.getElementById('resizeH').value = h;
+  resizePhoto();
+}
+
+function onWChange() {
+  if (document.getElementById('lockRatio').checked && uploadedImage && origW) {
+    const ratio = origH / origW;
+    document.getElementById('resizeH').value = Math.round(
+      parseInt(document.getElementById('resizeW').value || 1) * ratio
+    );
+  }
+  resizePhoto();
+}
+
+function onHChange() {
+  if (document.getElementById('lockRatio').checked && uploadedImage && origH) {
+    const ratio = origW / origH;
+    document.getElementById('resizeW').value = Math.round(
+      parseInt(document.getElementById('resizeH').value || 1) * ratio
+    );
+  }
+  resizePhoto();
+}
+
+function resizePhoto() {
+  if (!uploadedImage) return;
+  const w = Math.max(1, parseInt(document.getElementById('resizeW').value) || 180);
+  const h = Math.max(1, parseInt(document.getElementById('resizeH').value) || 180);
+  const c = document.getElementById('photoCanvas');
+  c.style.display = 'block';
+  // Cap preview display size to 480px wide
+  const displayW = Math.min(w, 480);
+  const displayH = Math.round(h * displayW / w);
+  c.style.width  = displayW + 'px';
+  c.style.height = displayH + 'px';
+  c.width  = w;
+  c.height = h;
+  const ctx = c.getContext('2d');
+  ctx.clearRect(0, 0, w, h);
+  ctx.drawImage(uploadedImage, 0, 0, w, h);
+  document.getElementById('photoBtns').style.display = 'flex';
+  document.getElementById('photoDims').textContent = `Canvas: ${w} × ${h} px`;
+}
+
+function savePhoto(fmt) {
+  if (!uploadedImage) return;
+  const w = document.getElementById('resizeW').value;
+  const h = document.getElementById('resizeH').value;
+  const mime = fmt === 'jpg' ? 'image/jpeg' : 'image/png';
+  const safeName = (lastPresetName || 'photo').replace(/[^a-z0-9]/gi, '-').toLowerCase();
+  const a = document.createElement('a');
+  a.download = `${safeName}-${w}x${h}.${fmt}`;
+  a.href = document.getElementById('photoCanvas').toDataURL(mime, 1.0);
+  a.click();
+  lastPresetName = '';
+}
+
+/* ═══════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════ */
+updateSizes();
+document.fonts.ready.then(draw);
+</script>
+</body>
+</html>
