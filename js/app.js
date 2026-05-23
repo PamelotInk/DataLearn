@@ -1324,14 +1324,12 @@ function attachListeners() {
   $a('.level-btn').forEach(btn =>
     btn.addEventListener('click', () => {
       const lvl = btn.dataset.level;
-      if (lvl === 'intermediate' || lvl === 'advanced') {
-        showPaywall();
-        return;
-      }
       STATE.level = lvl;
       $a('.level-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       buildLessonNav();
+      const first = getLessons(STATE.lang, STATE.level)[0];
+      if (first) loadLesson(first.id);
     }));
 
   /* ── Tab bar ── */

@@ -13967,6 +13967,8 @@ function attachListeners() {
       $a('.level-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       buildLessonNav();
+      const first = getLessons(STATE.lang, STATE.level)[0];
+      if (first) loadLesson(first.id);
     }));
 
   /* ── Tab bar ── */
