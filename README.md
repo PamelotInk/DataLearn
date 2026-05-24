@@ -64,4 +64,6 @@ Contributions start at $15, one-time. No subscription.
 
 ## License
 
-MIT — see [LICENSE](LICENSE)
+**All Rights Reserved** — This is proprietary software. The source code is visible for transparency but may not be copied, modified, distributed, or used to create derivative works without express written permission from the owner. See [LICENSE](LICENSE) for full terms.
+
+The live application at [datalearn.us.com](https://datalearn.us.com) is free to use for educational purposes.
