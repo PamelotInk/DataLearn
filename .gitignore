@@ -1,1 +1,13 @@
 Assets/calculators 1.0.html
+
+# Standalone app (full app in one file — theft risk)
+standalone.html
+_fix_standalone.js
+
+# Internal marketing & campaign files
+Assets/campaign-content.html
+
+# Internal design & generation tools
+Assets/social-preview-generator.html
+Assets/DataLearn-logo-exporter.html
+Assets/DataLearn-logo.svg
