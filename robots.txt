@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /thank-you.html
+Disallow: /thank-you-supporter.html
+Disallow: /thank-you-patron.html
+Disallow: /Assets/reward-calculator.html
+Disallow: /Assets/reward-calculator-guide.html
+Disallow: /Assets/campaign-content.html
+Disallow: /Assets/calculators 1.0.html
