@@ -433,9 +433,16 @@
 
   <div style="width:100%; max-width:900px; margin:16px auto 0; padding:0 20px; color:#8b949e; font-size:13px; line-height:1.6; text-align:center;">This page is reward access only. Please keep this link private and do not share it publicly.</div>
 
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script>
-  if (localStorage.getItem('datalearnRewardAccess') !== 'granted') {
-    window.location.replace('../contributor-access.html');
+  window.netlifyIdentity && window.netlifyIdentity.init();
+  window.netlifyIdentity && window.netlifyIdentity.on('init', user => {
+    if (!user) {
+      window.location.replace('../contributor-access.html?redirect=' + encodeURIComponent(window.location.pathname));
+    }
+  });
+  if (!window.netlifyIdentity) {
+    console.warn('Netlify Identity not loaded.');
   }
 </script>
 

@@ -368,9 +368,16 @@
 </head>
 <body>
 
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script>
-  if (localStorage.getItem('datalearnRewardAccess') !== 'granted') {
-    window.location.replace('../contributor-access.html');
+  window.netlifyIdentity && window.netlifyIdentity.init();
+  window.netlifyIdentity && window.netlifyIdentity.on('init', user => {
+    if (!user) {
+      window.location.replace('../contributor-access.html?redirect=' + encodeURIComponent(window.location.pathname));
+    }
+  });
+  if (!window.netlifyIdentity) {
+    console.warn('Netlify Identity not loaded.');
   }
 </script>
 
