@@ -218,7 +218,7 @@
       <div class="calc-box-label">Your Reward — Data Analyst Calculator</div>
       <div class="calc-link-row">
         <div class="calc-link">Contributor access granted</div>
-        <a href="Assets/reward-calculator.html" class="btn-access">
+        <a href="Assets/reward-calculator.html" class="btn-access" id="openRewardBtn">
           <i class="fas fa-calculator"></i> Open Calculator
         </a>
       </div>
@@ -248,6 +248,13 @@
     </div>
 
   </div>
+
+<script>
+  localStorage.setItem('datalearnRewardAccess', 'granted');
+  document.getElementById('openRewardBtn')?.addEventListener('click', function() {
+    localStorage.setItem('datalearnRewardAccess', 'granted');
+  });
+</script>
 
 </body>
 </html>

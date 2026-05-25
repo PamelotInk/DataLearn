@@ -368,6 +368,12 @@
 </head>
 <body>
 
+<script>
+  if (localStorage.getItem('datalearnRewardAccess') !== 'granted') {
+    window.location.replace('../contributor-access.html');
+  }
+</script>
+
   <div style="width:100%; max-width:900px; margin:16px auto 0; padding:0 20px; color:#6d7280; font-size:13px; line-height:1.6; text-align:center;">This reference guide is reward access only. Please keep this link private and do not share it publicly.</div>
 <div class="screen-wrap">
 
