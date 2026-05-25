@@ -12,16 +12,50 @@
     h1 { font-size:26px; margin-bottom:18px; }
     p { color:#9da5b4; line-height:1.75; margin-bottom:18px; }
     .note { background:rgba(63,185,80,.08); border:1px solid rgba(63,185,80,.16); padding:16px; border-radius:14px; margin-bottom:22px; }
-    .btn { display:inline-flex; align-items:center; justify-content:center; gap:10px; background:#3fb950; color:#fff; padding:13px 22px; border:none; border-radius:999px; font-weight:700; text-decoration:none; }
+    .input-group { margin-bottom:20px; }
+    label { display:block; font-size:13px; color:#8b94a6; margin-bottom:6px; }
+    input { width:100%; padding:14px 16px; border-radius:14px; border:1px solid #212830; background:#111620; color:#e6edf3; font-size:15px; }
+    .error { color:#f97373; font-size:13px; margin-top:10px; min-height:18px; }
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:10px; background:#3fb950; color:#fff; padding:13px 22px; border:none; border-radius:999px; font-weight:700; text-decoration:none; cursor:pointer; }
     .btn.secondary { background:rgba(255,255,255,.08); color:#e6edf3; }
   </style>
 </head>
 <body>
   <div class="card">
     <h1>Contributor access only</h1>
-    <div class="note">This page is part of the reward delivery flow and is intended only for contributors who have completed a payment. If you reached this page directly, you must return to the thank-you page after your purchase.</div>
-    <p>The calculator and guide are gated rewards. They are accessible by completing the Stripe payment and using the thank-you page that is delivered immediately after contribution.</p>
-    <a href="fundraiser.html" class="btn secondary">Return to Campaign</a>
+    <div class="note">This page is part of the reward delivery flow and is only for contributors who have completed a payment.</div>
+    <p>Enter the access code from your thank-you page to continue to the calculator reward.</p>
+    <div class="input-group">
+      <label for="accessCode">Access code</label>
+      <input id="accessCode" type="text" placeholder="Enter your access code" autocomplete="off" />
+      <div class="error" id="errorMsg"></div>
+    </div>
+    <button class="btn" id="submitBtn">Continue</button>
+    <div style="margin-top:18px; display:flex; gap:10px; flex-wrap:wrap;"><a href="fundraiser.html" class="btn secondary">Return to Campaign</a><a href="thank-you.html" class="btn secondary">Already paid?</a></div>
   </div>
+
+  <script>
+    const ACCESS_CODE = 'DATALEARN2026';
+    const input = document.getElementById('accessCode');
+    const error = document.getElementById('errorMsg');
+    const button = document.getElementById('submitBtn');
+
+    function grantAccess() {
+      localStorage.setItem('datalearnRewardAccess', 'granted');
+      window.location.replace('Assets/reward-calculator.html');
+    }
+
+    button.addEventListener('click', () => {
+      if (input.value.trim().toUpperCase() === ACCESS_CODE) {
+        grantAccess();
+      } else {
+        error.textContent = 'Invalid code. Please check your thank-you page and try again.';
+      }
+    });
+
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') button.click();
+    });
+  </script>
 </body>
 </html>
