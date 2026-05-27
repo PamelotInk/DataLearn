@@ -22,6 +22,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXX');
+  </script>
 
   <!-- CodeMirror 5 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css" />
@@ -78,6 +85,39 @@
       padding: 2px 4px;
     }
     .banner-close:hover { color: #d4f5d4; }
+    .newsletter-cta {
+      margin: 32px auto 0;
+      padding: 24px;
+      max-width: 980px;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 22px;
+      background: rgba(9,15,23,.95);
+      box-shadow: 0 24px 60px rgba(0,0,0,.16);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: center;
+    }
+    .newsletter-cta h2 {
+      margin: 0 0 6px;
+      font-size: 22px;
+      line-height: 1.2;
+    }
+    .newsletter-cta p { margin: 0; color: #c1c9d4; }
+    .newsletter-cta .cta-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: flex-end; }
+    .newsletter-cta .cta-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: var(--blue);
+      color: #fff;
+      font-weight: 700;
+      text-decoration: none;
+      transition: opacity .18s, transform .18s;
+    }
+    .newsletter-cta .cta-link:hover { opacity: .95; transform: translateY(-1px); }
   </style>
 </head>
 <body>
@@ -157,6 +197,9 @@
       <button class="icon-btn" id="resetBtn" title="Reset All Progress">
         <i class="fas fa-rotate-left"></i>
       </button>
+      <a href="subscribe.html" class="icon-btn" title="Subscribe to DataLearn updates" style="text-decoration:none;">
+        <i class="fas fa-envelope"></i>
+      </a>
     </div>
   </header>
   <input type="file" id="importFileInput" accept=".json" style="display:none">
@@ -216,6 +259,15 @@
             <div class="welcome-stat"><strong>6</strong><span>Languages</span></div>
             <div class="welcome-stat"><strong>3</strong><span>Skill Levels</span></div>
             <div class="welcome-stat"><strong>Live</strong><span>SQL Engine</span></div>
+          </div>
+          <div class="newsletter-cta">
+            <div>
+              <h2>Join the DataLearn mailing list</h2>
+              <p>Get new lessons, analyst tips, and free downloads delivered straight to your inbox.</p>
+            </div>
+            <div class="cta-actions">
+              <a href="subscribe.html" class="cta-link">Subscribe now</a>
+            </div>
           </div>
         </div>
 

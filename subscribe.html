@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Subscribe — DataLearn</title>
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXX');
+  </script>
+  <style>
+    body {
+      background: #090f18;
+      color: #e6edf3;
+      min-height: 100vh;
+    }
+    .subscribe-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 28px 32px 8px;
+    }
+    .subscribe-header a {
+      color: #c1c9d4;
+      font-size: 14px;
+      text-decoration: none;
+    }
+    .subscribe-page {
+      max-width: 940px;
+      margin: 0 auto 72px;
+      padding: 0 24px;
+    }
+    .subscribe-hero {
+      margin: 36px auto 20px;
+      padding: 40px 36px;
+      background: rgba(12, 20, 35, .96);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 28px;
+      box-shadow: 0 36px 90px rgba(0,0,0,.18);
+    }
+    .subscribe-hero h1 {
+      margin: 0 0 18px;
+      font-size: clamp(2.3rem, 4vw, 3.4rem);
+      line-height: 1.05;
+    }
+    .subscribe-hero p {
+      max-width: 700px;
+      margin: 0 0 28px;
+      font-size: 16px;
+      color: #b9c4d7;
+      line-height: 1.85;
+    }
+    .subscribe-form {
+      display: grid;
+      gap: 14px;
+      margin-top: 16px;
+    }
+    .subscribe-form input {
+      width: 100%;
+      min-height: 52px;
+      padding: 16px 18px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(15, 24, 40, .92);
+      color: #eef2ff;
+      font-size: 15px;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .subscribe-form input:focus {
+      border-color: rgba(94, 109, 255, .72);
+      box-shadow: 0 0 0 4px rgba(94, 109, 255, .12);
+    }
+    .subscribe-form button {
+      align-self: start;
+      width: fit-content;
+      min-width: 180px;
+      margin-top: 6px;
+    }
+    .subscribe-benefits {
+      display: grid;
+      gap: 18px;
+      margin-top: 32px;
+    }
+    .benefit-card {
+      background: rgba(12, 20, 35, .9);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 20px;
+      padding: 22px 24px;
+      display: grid;
+      gap: 10px;
+    }
+    .benefit-card h3 {
+      margin: 0;
+      font-size: 18px;
+      color: #fff;
+    }
+    .benefit-card p {
+      margin: 0;
+      color: #c1c9d4;
+      line-height: 1.8;
+    }
+    .subscribe-note {
+      margin-top: 22px;
+      color: #94a3b8;
+      font-size: 14px;
+    }
+    .form-status {
+      display: none;
+      margin-top: 10px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .form-status.success { color: #7dd3a2; }
+    .form-status.error { color: #f87171; }
+    @media (max-width: 720px) {
+      .subscribe-header { flex-direction: column; align-items: flex-start; }
+      .subscribe-form button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header class="subscribe-header">
+    <div class="brand-logo" style="cursor:default; display:flex; align-items:center; gap:10px;">
+      <i class="fas fa-database"></i>
+      <span style="font-size:1rem; font-weight:700; letter-spacing:.02em;">DataLearn</span>
+    </div>
+    <a href="index.html">Back to DataLearn</a>
+  </header>
+  <main class="subscribe-page">
+    <section class="subscribe-hero">
+      <h1>Stay connected with new lessons and tools.</h1>
+      <p>Subscribe to the DataLearn newsletter for weekly analytics tips, study reminders, free downloads, and early access to new content.</p>
+      <form id="subscribeForm" class="subscribe-form" name="newsletter" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/subscribe-thanks.html" novalidate>
+        <input type="hidden" name="form-name" value="newsletter" />
+        <input type="hidden" name="bot-field" aria-hidden="true" />
+        <input type="text" name="name" id="subscriberName" placeholder="Your name" required autocomplete="name" />
+        <input type="email" name="email" id="subscriberEmail" placeholder="Your email" required autocomplete="email" />
+        <button type="submit" class="btn-primary">Join the list</button>
+        <div id="formStatus" class="form-status"></div>
+      </form>
+      <p class="subscribe-note">This page uses Netlify Forms, so it is fully free when deployed on Netlify. The form will collect names and emails directly into your Netlify dashboard.</p>
+    </section>
+
+    <div class="subscribe-benefits">
+      <div class="benefit-card">
+        <h3>Why subscribe?</h3>
+        <p>Receive real DataLearn updates when new lessons are added, when the calculator is improved, or when special learning guides are published.</p>
+      </div>
+      <div class="benefit-card">
+        <h3>What you’ll get</h3>
+        <p>Weekly practical analytics tips, one-click lesson recommendations, and early access to courses for SQL, Python, SAS, R, Excel, and dbt.</p>
+      </div>
+      <div class="benefit-card">
+        <h3>No spam. No fuss.</h3>
+        <p>Your name and email are only used to send DataLearn updates. You can unsubscribe anytime with one click.</p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const form = document.getElementById('subscribeForm');
+    const status = document.getElementById('formStatus');
+
+    form.addEventListener('submit', (event) => {
+      if (!form.checkValidity()) {
+        status.textContent = 'Please enter both your name and a valid email address.';
+        status.className = 'form-status error';
+        status.style.display = 'block';
+        event.preventDefault();
+        return;
+      }
+      status.style.display = 'none';
+      status.className = 'form-status';
+      status.textContent = '';
+    });
+  </script>
+</body>
+</html>
