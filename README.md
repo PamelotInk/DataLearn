@@ -53,6 +53,15 @@ Contributions start at $15, one-time. No subscription.
 
 ---
 
+## Verify signup and analytics
+
+- Visit `https://datalearn.us.com/subscribe.html` and submit a test email.
+- In Netlify, check the Forms dashboard for a form named `newsletter`.
+- In Google Analytics Realtime, confirm active users and event activity from the page.
+- If you want a stronger signal, use the browser's GA Debug extension and look for the `newsletter_signup_complete` event.
+
+---
+
 ## Tech stack
 
 - Vanilla JavaScript (no frameworks)
