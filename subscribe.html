@@ -141,7 +141,7 @@
     <section class="subscribe-hero">
       <h1>Stay connected with new lessons and tools.</h1>
       <p>Subscribe to the DataLearn newsletter for weekly analytics tips, study reminders, free downloads, and early access to new content.</p>
-      <form id="subscribeForm" class="subscribe-form" name="newsletter" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/subscribe-thanks.html" novalidate>
+      <form id="subscribeForm" class="subscribe-form" name="newsletter" method="POST" data-netlify="true" netlify-honeypot="bot-field" novalidate>
         <input type="hidden" name="form-name" value="newsletter" />
         <input type="hidden" name="bot-field" aria-hidden="true" />
         <input type="text" name="name" id="subscriberName" placeholder="Your name" required autocomplete="name" />
@@ -149,6 +149,7 @@
         <button type="submit" class="btn-primary">Join the list</button>
         <div id="formStatus" class="form-status"></div>
       </form>
+      <div id="thankYouMessage" class="form-status success" style="display:none; margin-top:16px;">Thanks! You’re on the list. Expect DataLearn updates in your inbox soon.</div>
     </section>
 
     <div class="subscribe-benefits">
@@ -171,28 +172,45 @@
     const form = document.getElementById('subscribeForm');
     const status = document.getElementById('formStatus');
 
-    form.addEventListener('submit', (event) => {
-      if (!form.checkValidity()) {
-        status.textContent = 'Please enter both your name and a valid email address.';
-        status.className = 'form-status error';
-        status.style.display = 'block';
-        event.preventDefault();
-        return;
-      }
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
       status.style.display = 'none';
       status.className = 'form-status';
       status.textContent = '';
 
-      if (typeof gtag === 'function') {
-        event.preventDefault();
-        gtag('event', 'sign_up', {
-          method: 'netlify',
-          event_callback: function() {
-            form.submit();
-          },
-          event_timeout: 250
+      if (!form.checkValidity()) {
+        status.textContent = 'Please enter both your name and a valid email address.';
+        status.className = 'form-status error';
+        status.style.display = 'block';
+        return;
+      }
+
+      const formData = new FormData(form);
+      const thankYou = document.getElementById('thankYouMessage');
+
+      try {
+        const response = await fetch(window.location.pathname, {
+          method: 'POST',
+          body: formData,
         });
-        setTimeout(() => { form.submit(); }, 400);
+
+        if (response.ok) {
+          form.reset();
+          thankYou.style.display = 'block';
+          status.style.display = 'none';
+
+          if (typeof gtag === 'function') {
+            gtag('event', 'signup', { method: 'netlify' });
+          }
+        } else {
+          status.textContent = 'There was a problem submitting your signup. Please try again.';
+          status.className = 'form-status error';
+          status.style.display = 'block';
+        }
+      } catch (error) {
+        status.textContent = 'There was a problem sending your signup. Please try again later.';
+        status.className = 'form-status error';
+        status.style.display = 'block';
       }
     });
   </script>
