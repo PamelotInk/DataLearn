@@ -58,7 +58,7 @@ const SQL_LESSONS = [
   ],
   challenge:{
     title:'Pull Employee Info for Quarterly Review',
-    description:`Your manager messages you: "I need a list of all employees — their full name, department, job title, and salary — for the Q3 performance review. Can you pull that from the database?"`,
+    description:`Your manager messages you: "I need a list of all employees — their full name, department, job title, and salary — for the Q3 performance review. The table stores the job title in the <code>job_title</code> column. Can you pull that from the database?"`,
     hint:`The table name is <code>employees</code>. You need: <code>first_name</code>, <code>last_name</code>, <code>department</code>, <code>job_title</code>, <code>salary</code>`,
     starterCode:`-- Write your query below\nSELECT\n\nFROM ;`,
     solution:`SELECT\n    first_name  AS "First Name",\n    last_name   AS "Last Name",\n    department  AS "Department",\n    job_title   AS "Job Title",\n    salary      AS "Salary"\nFROM employees;`,
@@ -124,8 +124,8 @@ const SQL_LESSONS = [
   ],
   challenge:{
     title:'Identify High-Value Sales Staff',
-    description:`HR is conducting a compensation review. They need a list of all Sales and Marketing employees whose salary is above $65,000. Return their name, department, job title, and salary — sorted by salary descending.`,
-    hint:`Filter where department is in ('Sales','Marketing') AND salary > 65000. Then add ORDER BY salary DESC.`,
+    description:`HR is conducting a compensation review. They need a list of all Sales and Marketing employees whose salary is above $65,000. Return their name, department, job title, and salary — sorted by salary descending. The actual job title column is <code>job_title</code>.`,
+    hint:`Filter where department is in ('Sales','Marketing') AND salary > 65000. Then add ORDER BY salary DESC. Use the <code>job_title</code> column for titles.`,
     starterCode:`-- Filter employees by department and salary\nSELECT\n\nFROM employees\nWHERE\n\nORDER BY ;`,
     solution:`SELECT\n    first_name  AS "First Name",\n    last_name   AS "Last Name",\n    department  AS "Department",\n    job_title   AS "Job Title",\n    salary      AS "Salary"\nFROM employees\nWHERE department IN ('Sales', 'Marketing')\n  AND salary > 65000\nORDER BY salary DESC;`,
     explanation:`We use IN to match two departments, AND to add the salary filter, and ORDER BY salary DESC to show highest earners first.`,

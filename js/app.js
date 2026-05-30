@@ -673,13 +673,18 @@ function renderLearnTab(lesson) {
   const runBtn  = $('runStepBtn');
   const copyBtn = $('copyStepBtn');
   if (runBtn) {
-    runBtn.onclick = () => {
+    runBtn.onclick = async () => {
       const code = STATE.editors.step?.getValue() || '';
       const out  = $('stepOutput');
       if (!out) return;
       const cur = getLessonById(STATE.lessonId);
-      if (cur?.language === 'sql') runSQL(code, out, false, []);
-      else renderSimOutput(cur, STATE.stepIndex, out);
+      if (cur?.language === 'sql') {
+        runSQL(code, out, false, []);
+      } else if (cur?.language === 'python') {
+        await runPython(code, out);
+      } else {
+        renderSimOutput(cur, STATE.stepIndex, out);
+      }
     };
   }
   if (copyBtn) {
@@ -735,6 +740,12 @@ function renderStep(lesson, idx) {
     STATE.editors.step.setValue(step.code || '');
     setEditorMode(STATE.editors.step, lesson.language);
     setTimeout(() => STATE.editors.step?.refresh(), 10);
+  }
+
+  const stepEditorBadge = $('stepEditorBadge');
+  if (stepEditorBadge) {
+    stepEditorBadge.textContent = { sql:'SQL', python:'Python', sas:'SAS', r:'R', excel:'Excel', dbt:'dbt' }[lesson.language] || '';
+    stepEditorBadge.className = `editor-badge ${lesson.language}`;
   }
 
   // Clear step output when navigating
