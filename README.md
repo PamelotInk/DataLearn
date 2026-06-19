@@ -47,7 +47,7 @@ DataLearn is free and will always be free for Beginner content. To keep building
 
 **Contributors get a Data Analyst Calculator** — a tool packed with the KPI formulas analysts actually need on the job: confidence intervals, A/B test sample sizing, customer LTV, churn rate, MoM/YoY growth, and more.
 
-→ **[datalearn.us.com/fundraiser.html](https://datalearn.us.com/fundraiser.html)**
+→ **[datalearn.us.com/support.html](https://datalearn.us.com/support.html)**
 
 Contributions start at $15, one-time. No subscription.
 
