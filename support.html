@@ -576,98 +576,44 @@
 
     .calc-features {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 0;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      padding: 24px;
     }
 
     .calc-feature {
-      padding: 28px 28px;
-      border-bottom: 1px solid var(--border);
-      border-right: 1px solid var(--border);
+      padding: 24px;
+      background: rgba(83, 155, 245, .07);
+      border: 1px solid rgba(83, 155, 245, .18);
+      border-radius: 22px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.04);
+      min-height: 180px;
     }
 
-    .calc-feature:nth-child(even) { border-right: none; }
-
     .calc-feature i {
-      font-size: 22px;
-      margin-bottom: 12px;
+      font-size: 24px;
+      margin-bottom: 14px;
       display: block;
     }
 
     .calc-feature h4 {
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 700;
-      margin-bottom: 6px;
+      margin-bottom: 10px;
       color: var(--text-1);
     }
 
     .calc-feature p {
       font-size: 13px;
-      color: var(--text-3);
-      line-height: 1.6;
+      color: var(--text-2);
+      line-height: 1.7;
     }
 
-    .calc-preview-card {
-      max-width: 860px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-      text-align: center;
-    }
-
-    .calc-preview-screenshot {
-      width: 100%;
-      background: linear-gradient(180deg, rgba(15,17,23,.98), rgba(22,27,34,1));
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 22px;
-      padding: 24px;
-      box-shadow: 0 28px 60px rgba(0,0,0,.25);
-    }
-
-    .calc-screen-header {
-      background: rgba(255,255,255,.05);
-      border: 1px solid rgba(255,255,255,.1);
-      border-radius: 16px;
-      padding: 14px 18px;
-      margin-bottom: 18px;
-      text-align: left;
-    }
-
-    .calc-screen-header span {
-      font-size: 14px;
-      font-weight: 700;
-      color: #cdd9e5;
-    }
-
+    .calc-preview-card,
+    .calc-preview-screenshot,
+    .calc-screen-header,
     .calc-screenshot-grid {
-      display: grid;
-      gap: 16px;
-      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-    }
-
-    .calc-screenshot-card {
-      background: rgba(255,255,255,.03);
-      border: 1px solid rgba(255,255,255,.06);
-      border-radius: 16px;
-      padding: 18px 16px;
-      min-height: 120px;
-    }
-
-    .calc-screenshot-card h5 {
-      font-size: 12px;
-      font-weight: 700;
-      color: #8b949e;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      margin-bottom: 10px;
-    }
-
-    .calc-screenshot-card p {
-      font-size: 13px;
-      color: #cdd9e5;
-      line-height: 1.6;
+      display: none;
     }
 
     .calc-preview-note {
@@ -1031,42 +977,41 @@
           <h4>SQL Query Estimator</h4>
           <p>Estimate row counts, join sizes, and performance implications before you run that big query.</p>
         </div>
-      </div>
-    </div>
-
-    <div class="calc-preview-card">
-      <div class="calc-preview-screenshot">
-        <div class="calc-screen-header"><span>Calculator preview (static image)</span></div>
-        <div class="calc-screenshot-grid">
-          <div class="calc-screenshot-card">
-            <h5>Sample size</h5>
-            <p>Enter baseline conversion, variation lift, and confidence to calculate the sample size you need.</p>
-          </div>
-          <div class="calc-screenshot-card">
-            <h5>Customer LTV</h5>
-            <p>Forecast LTV by average order, retention rate, and gross margin — standard decision-making modeling.</p>
-          </div>
-          <div class="calc-screenshot-card">
-            <h5>A/B testing</h5>
-            <p>Choose metrics, enter traffic volume, and get an immediate recommendation for test power.</p>
-          </div>
-          <div class="calc-screenshot-card">
-            <h5>Growth metrics</h5>
-            <p>MoM, YoY, and CAGR formulas are shown side-by-side so you can compare results at a glance.</p>
-          </div>
-          <div class="calc-screenshot-card">
-            <h5>Retention rate</h5>
-            <p>Measure how many users return over time and spot trends in churn versus loyalty.</p>
-          </div>
-          <div class="calc-screenshot-card">
-            <h5>Revenue forecast</h5>
-            <p>Project future revenue with average order value, conversion rate, and growth assumptions.</p>
-          </div>
+        <div class="calc-feature">
+          <i class="fas fa-percent" style="color:var(--orange)"></i>
+          <h4>Sample size calculator</h4>
+          <p>Enter baseline conversion, variation lift, and confidence to calculate the sample size you need.</p>
+        </div>
+        <div class="calc-feature">
+          <i class="fas fa-dollar-sign" style="color:var(--gold)"></i>
+          <h4>Customer LTV</h4>
+          <p>Forecast lifetime value by average order, retention rate, and gross margin.</p>
+        </div>
+        <div class="calc-feature">
+          <i class="fas fa-flask" style="color:var(--purple)"></i>
+          <h4>A/B testing</h4>
+          <p>Choose metrics, enter traffic volume, and get an immediate recommendation for test power.</p>
+        </div>
+        <div class="calc-feature">
+          <i class="fas fa-chart-line" style="color:var(--green)"></i>
+          <h4>Growth metrics</h4>
+          <p>Compare MoM, YoY, and CAGR results side-by-side so your forecast stays clear.</p>
+        </div>
+        <div class="calc-feature">
+          <i class="fas fa-user-check" style="color:var(--blue)"></i>
+          <h4>Retention rate</h4>
+          <p>Measure how many users return over time and spot trends in churn versus loyalty.</p>
+        </div>
+        <div class="calc-feature">
+          <i class="fas fa-chart-area" style="color:var(--text-1)"></i>
+          <h4>Revenue forecast</h4>
+          <p>Project future revenue with average order value, conversion rate, and growth assumptions.</p>
         </div>
       </div>
       <p class="calc-preview-note">This is a visual preview only. Full calculator access is delivered instantly after contribution on the thank-you page.</p>
     </div>
   </section>
+
 
   <hr class="divider" />
 
